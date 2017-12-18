@@ -1,0 +1,2498 @@
+#include "table.h"
+
+//#include <assert.h>
+//#include <curl/curl.h>
+//#include <errno.h>
+#include <ev.h>
+//#include <fcntl.h>
+#include <hiredis/hiredis.h>
+#include <json/value.h>
+//#include <stdarg.h>
+#include <stddef.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
+//#include <sys/stat.h>
+//#include <sys/types.h>
+#include <time.h>
+//#include <unistd.h>
+//#include <algorithm>
+#include <utility>
+
+//#include "card_find.h"
+#include "client.h"
+#include "game.h"
+#include "landlord.h"
+#include "libddz/card.h"
+#include "libddz/card_analysis.h"
+#include "libddz/card_type.h"
+#include "libddz/community_cards.h"
+#include "libddz/hole_cards.h"
+#include "log.h"
+#include "player.h"
+#include "proto.h"
+#include "redis_client.h"
+
+extern Landlord landlord;
+extern Log log;
+
+Table::Table() :
+preready_timer_stamp(9),
+preplay_timer_stamp(20),
+play_timer_stamp(20),
+robot_timer_stamp(0.5),
+rocket_timer_stamp(2),
+noPerson_timer_stamp(4)
+{
+    preready_timer.data = this;
+    ev_timer_init(&preready_timer, Table::preready_timer_cb, preready_timer_stamp,
+                    preready_timer_stamp);
+	
+    preplay_timer.data = this;
+    ev_timer_init(&preplay_timer, Table::preplay_timer_cb, preplay_timer_stamp,
+                    preplay_timer_stamp);
+	
+    play_timer.data = this;
+    ev_timer_init(&play_timer, Table::play_timer_cb, play_timer_stamp,
+                    play_timer_stamp);
+					
+    robot_timer.data = this;
+    ev_timer_init(&robot_timer, Table::robot_timer_cb, robot_timer_stamp,
+                    robot_timer_stamp);
+					
+    rocket_timer.data = this;
+    ev_timer_init(&rocket_timer, Table::rocket_timer_cb, rocket_timer_stamp,
+                    rocket_timer_stamp);
+    noPerson_timer.data = this;
+    ev_timer_init(&noPerson_timer, Table::noPerson_timer_cb, noPerson_timer_stamp,
+        			noPerson_timer_stamp);
+}
+
+Table::~Table()
+{
+	ev_timer_stop(landlord.loop, &preready_timer);
+	ev_timer_stop(landlord.loop, &preplay_timer);
+	ev_timer_stop(landlord.loop, &play_timer);
+	ev_timer_stop(landlord.loop, &robot_timer);
+	ev_timer_stop(landlord.loop, &rocket_timer);
+	ev_timer_stop(landlord.loop, &noPerson_timer);
+}
+
+int Table::init(int my_table_id, int my_vid, int my_zid, int my_table_type, int my_min_money, int my_base_money)
+{
+	// log.debug("begin to init table [%d]\n", table_id);
+	tid = my_table_id;
+    vid = my_vid;
+	zid = my_zid;
+	table_type = my_table_type;
+    min_money = my_min_money;
+	base_money = my_base_money; 
+	// log.debug("tables type[%d] table_type[%d] min_money[%d] base_money[%d]\n", type, table_type, min_money, base_money);
+	level = 2;
+	wait_time = 20;
+	ready_time = 20;
+    cur_players = 0;
+	players.clear();
+	ready_players = 0;
+    for (int i = 0; i < 3; i++)
+    {
+        seats[i].seat_no = i;
+		seats[i].occupied = false;
+        seats[i].player = NULL;
+    }
+	
+	landlord_seat = 3;
+
+/*
+	int ret;
+	ret = landlord.main_rc->command("hset ro:%d online 0", type);
+	if (ret < 0)
+	{
+		log.debug("init online error.\n");
+	}
+*/
+	// log.debug("end to init table [%d]\n", table_id);
+    return 0;
+}
+
+int Table::add_player(Player *player)
+{
+	if (players.find(player->uid) == players.end())
+	{
+		players[player->uid] = player;
+		player->tid = tid;
+		// todo check.
+		player->seatid = sit_down(player);
+		player->ready = 0;
+		if (player->seatid < 0)
+		{
+			return -1;
+		}
+		unicast_join_table_succ(player);
+		cur_players++;
+		// player->incr_online(type);
+		
+		return 0;
+	}
+	return -1;
+}
+
+void Table::unicast_join_table_succ(Player *player)
+{
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_JOIN_TABLE_SUCC_UC;
+    packet.val["vid"] = player->vid;
+    packet.val["zid"] = player->zid;
+	packet.val["tid"] = player->tid;
+	packet.val["uid"] = player->uid;
+	packet.val["seatid"] = player->seatid;
+    packet.end();
+	unicast(player, packet.tostring());
+}
+
+int Table::sit_down(Player *player)
+{
+    for (int i = 0; i < 3; i++)
+    {
+		if (!seats[i].occupied)
+		{
+			seats[i].occupied = true;
+			seats[i].player = player;
+			return i;
+		}
+    }
+	
+	return -1;
+}
+
+int Table::del_player(Player *player)
+{
+	if (players.find(player->uid) == players.end())
+	{
+		log.debug("player uid[%d] talbe del_player is error.", player->uid);
+		return -1;
+	}
+	if (player->ready == 1)
+	{
+		ready_players--;
+	}
+	player->stop_ready_timer();
+	player->stop_offline_timer();
+	// player->decr_online(type);
+	players.erase(player->uid);
+	stand_up(player);
+	cur_players--;
+
+	//log.debug("uid[%d]cur_players[%d]\n", player->uid, cur_players);
+	
+	// safe
+	// ev_timer_stop(landlord.loop, &preready_timer);
+	ev_timer_stop(landlord.loop, &preplay_timer);
+	ev_timer_stop(landlord.loop, &play_timer);
+	ev_timer_stop(landlord.loop, &robot_timer);
+	ev_timer_stop(landlord.loop, &rocket_timer);
+
+	if(cur_players==0 && ready_players==0){
+//		log.debug("#########delp[%d][%d]########\n",ready_players,cur_players);
+		ev_timer_stop(landlord.loop, &noPerson_timer);
+	}
+	return 0;
+}
+
+void Table::stand_up(Player *player)
+{
+	seats[player->seatid].occupied = false;
+	seats[player->seatid].player = NULL;
+}
+
+void Table::del_all_players()
+{
+	Player *player;
+	std::map<int, Player*> tmp = players;
+	std::map<int, Player*>::iterator it;
+	for (it = tmp.begin(); it != tmp.end(); it++)
+	{
+	    player = it->second;
+	    if(player->uid>=landlord.conf["game"]["robotStart"].asInt() &&
+	    			player->uid<=landlord.conf["game"]["robotEnd"].asInt()){
+	    	log.debug("######reset_robot nocall.uid[%d]###\n",player->uid);
+	    	landlord.cache_rc->command("rpush lrob:ids %d",player->uid);
+	    }
+		landlord.game->del_player(player);
+	}	
+}
+
+int Table::broadcast(Player *p, const std::string &packet)
+{
+    Player *player;
+    std::map<int, Player*>::iterator it;
+    for (it = players.begin(); it != players.end(); it++)
+    {
+        player = it->second;
+        if (player == p || player->client == NULL)
+        {
+            continue;
+        }
+        player->client->send(packet);
+    }
+
+    return 0;
+}
+
+int Table::unicast(Player *p, const std::string &packet)
+{
+    if (p->client)
+    {
+        return p->client->send(packet);
+    }
+    return -1;
+}
+
+void Table::wait_join_robot(int uid)
+{
+	if(uid<landlord.conf["game"]["robotStart"].asInt() ||
+				uid>landlord.conf["game"]["robotEnd"].asInt()){
+			// no person join in,so robot in
+		ev_timer_again(landlord.loop, &noPerson_timer);
+	}
+}
+
+int Table::table_info_broadcast()
+{
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_TABLE_INFO_BC;
+	
+	Player *player;
+    std::map<int, Player*>::iterator it;
+	int i = 0;
+    for (it = players.begin(); it != players.end(); it++)
+    {
+        player = it->second;
+		packet.val["players"][i]["ready"] = player->ready;
+	    packet.val["players"][i]["seatid"] = player->seatid;
+		packet.val["players"][i]["uid"] = player->uid;
+	    packet.val["players"][i]["name"] = player->name;
+		packet.val["players"][i]["sex"] = player->sex;
+		packet.val["players"][i]["birthday"] = player->birthday;
+		packet.val["players"][i]["zone"] = player->zone;
+		packet.val["players"][i]["level"] = player->level;
+		packet.val["players"][i]["exp"] = player->exp;
+//		packet.val["players"][i]["cooldou"] = player->cooldou;
+		packet.val["players"][i]["money"] = player->money;
+		packet.val["players"][i]["coin"] = player->coin;
+		packet.val["players"][i]["total_board"] = player->total_board;
+		packet.val["players"][i]["total_win"] = player->total_win;
+		packet.val["players"][i]["pcount"] = player->pcount;
+		packet.val["players"][i]["vtime"] = player->vtime;
+		packet.val["players"][i]["rtime"] = player->rtime;
+		i++;
+    }
+	packet.val["state"] = state; // must be ready
+    packet.end();
+	broadcast(NULL, packet.tostring());
+#if 0
+	{
+		state = READY;
+		std::map<int, Player*>::iterator it;
+		for (it = players.begin(); it != players.end(); it++)
+		{
+			Player *player = it->second;
+			if (player->ready == 0)
+			{
+				player->start_ready_timer();
+				player->start_offline_timer();
+			}
+		}
+	}
+#else
+	{
+		state = READY;
+		std::map<int, Player*> temp;
+		std::map<int, Player*>::iterator it;
+		for (it = players.begin(); it != players.end(); it++)
+		{
+			Player *player = it->second;
+			if (player->client)
+			{
+				// log.debug("uid[%d] money[%d] min_money[%d]\n", player->uid, player->money, min_money / 5);
+				if (player->money < min_money)
+				{
+					log.debug("uid[%d] money[%d] min_money[%d] money too less.\n", player->uid, player->money, min_money);
+					temp[player->uid] = player;
+					player->logout_type = 1;
+				}
+				else
+				{
+					if (player->ready == 0)
+					{
+						// player->reset();
+						player->start_ready_timer();
+						player->start_offline_timer();
+					}
+				}
+			}
+			else // net err
+			{
+				temp[player->uid] = player;
+				player->logout_type = 0;
+			}
+		}
+
+		for (it = temp.begin(); it != temp.end(); it++)
+		{
+			Player *player = it->second;
+			landlord.game->del_player(player);
+		}
+		
+		ev_timer_stop(landlord.loop, &preready_timer);
+	}
+#endif
+	// handler_game_preready();
+	
+	return 0;
+}
+
+void Table::preplay_timer_cb(struct ev_loop *loop, struct ev_timer *w, int revents)
+{
+    Table *table = (Table*)w->data;
+	ev_timer_stop(landlord.loop, &table->preplay_timer);
+	Player *player = table->seats[table->cur_seat].player;
+	if (table->state == PREPLAY_ONE)
+	{
+		 table->handler_preplay_one(player, NO_CALL);
+		 log.debug("preplay_timer_cb timeout PREPLAY_ONE no call\n");
+	}
+	else if (table->state == PREPLAY_TWO)
+	{
+		 table->handler_preplay_two(player, NO_CALL);
+		 log.debug("preplay_timer_cb timeout PREPLAY_TWO no call\n");
+	}
+}
+
+void Table::handler_game_preready()
+{
+	if (state != END_GAME)
+	{
+		log.error("handler_game_preready state[%d]\n", state);
+		return;
+	}
+	
+	// rest ready players number to zero
+	ready_players = 0;
+	state = READY;
+	
+	std::map<int, Player*> temp;
+	std::map<int, Player*>::iterator it;
+	for (it = players.begin(); it != players.end(); it++)
+	{
+		Player *player = it->second;
+		player->ready = 0;
+		if (player->client)
+		{
+			// log.debug("uid[%d] money[%d] min_money[%d]\n", player->uid, player->money, min_money / 5);
+			if (player->money < min_money)
+			{
+				log.debug("uid[%d] money[%d] min_money[%d] money too less.\n", player->uid, player->money, min_money);
+				temp[player->uid] = player;
+				player->logout_type = 1;
+			}
+			else
+			{
+				if (player->ready == 0)
+				{
+					// player->reset();
+					player->start_ready_timer();
+					player->start_offline_timer();
+				}
+			}
+		}
+		else // net err
+		{
+			temp[player->uid] = player;
+			player->logout_type = 0;
+		}
+	}
+	
+	for (it = temp.begin(); it != temp.end(); it++)
+	{
+		Player *player = it->second;
+		landlord.game->del_player(player);
+	}
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_GAME_PREREADY_BC;
+    packet.end();
+    broadcast(NULL, packet.tostring());
+}
+
+int Table::handler_game_ready(Player *player)
+{
+	if (state != READY)
+	{
+		log.error("handler_game_ready state[%d]\n", state);
+		return -1;
+	}
+
+	if (player->ready == 1)
+	{
+		//log.debug("handler_game_ready ready_players[%d]\n", ready_players);
+		/*std::map<int, Player*>::iterator it;
+		for (it = players.begin(); it != players.end(); it++)
+		{
+			Player *p = it->second;
+			log.debug("handler_game_ready uid[%d] ready[%d]\n", p->uid, p->ready);
+		}*/
+		log.error("player[%d] have been seted for game ready\n", player->uid);
+		return -1;
+	}
+	player->ready = 1;
+	player->stop_ready_timer();
+	ready_players++;
+	
+	{
+		log.debug("handler_game_ready ready_players[%d]\n", ready_players);
+		int temp = 0;
+		std::map<int, Player*>::iterator it;
+		for (it = players.begin(); it != players.end(); it++)
+		{
+			Player *p = it->second;
+			temp += p->ready;
+//			log.debug("handler_game_ready uid[%d] ready[%d]\n", p->uid, p->ready);
+		}
+
+		if (temp != ready_players)
+		{
+			log.error("handler_game_ready temp[%d] ready_players[%d]\n", temp, ready_players);
+			ready_players = temp;
+			exit(1);
+		}
+	}
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_GAME_READY_BC;
+    packet.val["uid"] = player->uid;
+	packet.val["seatid"] = player->seatid;
+    packet.end();
+    broadcast(NULL, packet.tostring());
+	
+	log.debug("player[%d] be seted for game ready ready_players[%d]\n", player->uid, ready_players);
+	if (ready_players == 3)
+	{
+		nocall_cnt = 0;
+		ready_players = 0;
+		ev_timer_stop(landlord.loop, &preready_timer);
+		
+		std::map<int, Player*>::iterator it;
+		for (it = players.begin(); it != players.end(); it++)
+		{
+			Player *p = it->second;
+			p->reset();
+		}
+		start_game();
+	}
+	/*if(ready_players == 1 && (player->uid<landlord.conf["game"]["robotStart"].asInt() ||
+			player->uid>landlord.conf["game"]["robotEnd"].asInt())){
+		// no person join in,so robot in
+		ev_timer_again(landlord.loop, &noPerson_timer);
+	}*/
+	return 0;
+}
+
+int Table::start_game()
+{
+	log.debug("table[%d] start game\n", tid);
+	landlord.game->dump_msg("start_game");
+//	landlord.game->dump_game_info("start_game");
+	reset();
+	
+	start_seat = next_seat(landlord_seat);
+	cur_seat = start_seat;
+	log.debug("tid[%d] landlord_seat[%d] start_seat[%d] cur_seat[%d]\n",
+				tid, landlord_seat, start_seat, cur_seat);
+
+	deck.fill(tid, landlord.conf["tables"]["min_bomb"].asInt(),
+				landlord.conf["tables"]["max_bomb"].asInt());
+	deck.debug();
+	deck.shuffle(tid);
+	deck.get_hole_cards_bomb(seats[0].player->hole_cards);
+	deck.get_hole_cards_bomb(seats[1].player->hole_cards);
+	deck.get_hole_cards_bomb(seats[2].player->hole_cards);
+	deck.get_community_cards(community_cards);
+	
+    for (int i = 0; i < 3; i++)
+    {
+	    Jpacket packet;
+	    packet.val["cmd"] = SERVER_GAME_START_UC;
+		map_to_json_array(seats[i].player->hole_cards.cards, packet, "holes");
+	    packet.val["uid"] = seats[i].player->uid;
+		packet.val["seatid"] = seats[i].seat_no;
+	    packet.end();
+		unicast(seats[i].player, packet.tostring());
+    }
+	
+	cur_action = ONE_RATIO;
+	
+	nocall.clear();
+	out_cards.clear();
+	
+	start_preplay_one();
+	
+	return 0;
+}
+
+int Table::random(int start, int end)
+{
+	return start + rand() % (end - start + 1);
+}
+
+/*
+void Table::gen_random_task()
+{
+	if (landlord.conf["random-task"]["enable"].asInt() == 0)
+	{
+		task_type = 0;
+		task_id = 0;
+		return;
+	}
+	
+	int i = random(0, 3);
+	if (i == 3)
+	{
+		task_type = 2;
+		task_id = random(101, 111);
+	}
+	else
+	{
+		int j = random(0, 1);
+		if (j == 0)
+		{
+			task_type = 1;
+			task_id = random(1, 14);	
+		}
+		else
+		{
+			task_type = 3;
+			task_id = random(1, 10);
+		}
+	}
+	
+	if (task_type == 3)
+	{
+		if (task_id == 1)
+		{
+			task_card_type = CARD_TYPE_THREEWITHTWO;
+		}
+		else if (task_id == 2)
+		{
+			task_card_type = CARD_TYPE_THREEWITHONE;
+		}
+		else if (task_id == 3)
+		{
+			task_card_type = CARD_TYPE_ROCKET;
+		}
+		else if (task_id == 4)
+		{
+			task_card_type = CARD_TYPE_FOURWITHONE;
+		}
+		else if (task_id == 5)
+		{
+			task_card_type = CARD_TYPE_FOURWITHTWO;
+		}
+		else if (task_id == 6)
+		{
+			task_card_type = CARD_TYPE_ONELINE;
+		}
+		else if (task_id == 7)
+		{
+			task_card_type = CARD_TYPE_THREE;
+		}
+		else if (task_id == 8)
+		{
+			task_card_type = CARD_TYPE_BOMB;
+		}
+		else if (task_id == 9)
+		{
+			task_card_type = CARD_TYPE_TWO;
+		}
+		else if (task_id == 10)
+		{
+			task_card_type = CARD_TYPE_TWOLINE;
+		}
+	}
+	else
+	{
+		int tmp = task_id;
+		if (task_id >= 100)
+		{
+			tmp = task_id - 100;
+		}
+	
+		if (tmp == 1)
+		{
+			task_card_type = CARD_TYPE_TWOLINE;
+		}
+		else if (tmp == 2)
+		{
+			task_card_type = CARD_TYPE_THREEWITHONE;
+		}
+		else if (tmp == 3)
+		{
+			task_card_type = CARD_TYPE_THREEWITHTWO;
+		}
+		else if (tmp == 4)
+		{
+			task_card_type = CARD_TYPE_FOURWITHONE;
+		}
+		else if (tmp == 5)
+		{
+			task_card_type = CARD_TYPE_FOURWITHTWO;
+		}
+		else if (tmp == 6)
+		{
+			task_card_type = CARD_TYPE_ROCKET;
+		}
+		else if (tmp == 7)
+		{
+			task_card_type = CARD_TYPE_ONELINE;
+		}
+		else if (tmp == 8)
+		{
+			task_card_type = CARD_TYPE_THREE;
+		}
+		else if (tmp == 9)
+		{
+			task_card_type = CARD_TYPE_PLANEWITHONE;
+		}
+		else if (tmp == 10)
+		{
+			task_card_type = CARD_TYPE_PLANEWITHWING;
+		}
+		else if (tmp == 11)
+		{
+			task_card_type = CARD_TYPE_THREELINE;
+		}
+		else if (tmp == 12)
+		{
+			task_card_type = CARD_TYPE_TWO;
+		}
+		else if (tmp == 13)
+		{
+			task_card_type = CARD_TYPE_ONE;
+		}
+		else if (tmp == 14)
+		{
+			task_card_type = CARD_TYPE_BOMB;
+		}	
+	}
+}
+*/
+
+void Table::gen_random_task()
+{
+	task_type = 0;
+	task_id = 0;
+	return;
+	/*landlord.cache_rc->command("smembers staskr:ids");
+	size_t len = landlord.cache_rc->reply->elements;
+	if(len<=0){
+		return;
+	}
+	int ind = random(0,len-1);
+	task_id = ::atoi(landlord.cache_rc->reply->element[ind]->str);
+	log.debug("task_id[%d][%d]\n",len,task_id);*/
+//	landlord.cache_rc->dump_elements();
+	/*if (landlord.conf["random-task"]["enable"].asInt() == 0)
+	{
+		task_type = 0;
+		task_id = 0;
+		return;
+	}
+	
+	int i = random(1, 10);
+	if (i >= 1 && i <= 2)
+	{
+		task_type = 2;
+		task_id = random(101, 111);
+	}
+	else if (i >= 3 && i <= 4)
+	{
+		task_type = 1;
+		task_id = random(1, 6);
+		if (task_id == 1)
+		{
+			task_id = 2;
+		}
+		else if (task_id == 2)
+		{
+			task_id = 3;
+		}
+		else if (task_id == 3)
+		{
+			task_id = 6;
+		}
+		else if (task_id == 4)
+		{
+			task_id = 12;
+		}
+		else if (task_id == 5)
+		{
+			task_id = 13;
+		}
+		else if (task_id == 6)
+		{
+			task_id = 14;
+		}
+	}
+	else
+	{
+		task_type = 3;
+		task_id = random(1, 6);
+		if (task_id == 1)
+		{
+			task_id = 1;
+		}
+		else if (task_id == 2)
+		{
+			task_id = 2;
+		}
+		else if (task_id == 3)
+		{
+			task_id = 3;
+		}
+		else if (task_id == 4)
+		{
+			task_id = 6;
+		}
+		else if (task_id == 5)
+		{
+			task_id = 8;
+		}
+		else if (task_id == 6)
+		{
+			task_id = 9;
+		}
+	}
+
+	if (task_type == 3)
+	{
+		if (task_id == 1)
+		{
+			task_card_type = CARD_TYPE_THREEWITHTWO;
+		}
+		else if (task_id == 2)
+		{
+			task_card_type = CARD_TYPE_THREEWITHONE;
+		}
+		else if (task_id == 3)
+		{
+			task_card_type = CARD_TYPE_ROCKET;
+		}
+		else if (task_id == 4)
+		{
+			task_card_type = CARD_TYPE_FOURWITHONE;
+		}
+		else if (task_id == 5)
+		{
+			task_card_type = CARD_TYPE_FOURWITHTWO;
+		}
+		else if (task_id == 6)
+		{
+			task_card_type = CARD_TYPE_ONELINE;
+		}
+		else if (task_id == 7)
+		{
+			task_card_type = CARD_TYPE_THREE;
+		}
+		else if (task_id == 8)
+		{
+			task_card_type = CARD_TYPE_BOMB;
+		}
+		else if (task_id == 9)
+		{
+			task_card_type = CARD_TYPE_TWO;
+		}
+		else if (task_id == 10)
+		{
+			task_card_type = CARD_TYPE_TWOLINE;
+		}
+	}
+	else
+	{
+		int tmp = task_id;
+		if (task_id >= 100)
+		{
+			tmp = task_id - 100;
+		}
+	
+		if (tmp == 1)
+		{
+			task_card_type = CARD_TYPE_TWOLINE;
+		}
+		else if (tmp == 2)
+		{
+			task_card_type = CARD_TYPE_THREEWITHONE;
+		}
+		else if (tmp == 3)
+		{
+			task_card_type = CARD_TYPE_THREEWITHTWO;
+		}
+		else if (tmp == 4)
+		{
+			task_card_type = CARD_TYPE_FOURWITHONE;
+		}
+		else if (tmp == 5)
+		{
+			task_card_type = CARD_TYPE_FOURWITHTWO;
+		}
+		else if (tmp == 6)
+		{
+			task_card_type = CARD_TYPE_ROCKET;
+		}
+		else if (tmp == 7)
+		{
+			task_card_type = CARD_TYPE_ONELINE;
+		}
+		else if (tmp == 8)
+		{
+			task_card_type = CARD_TYPE_THREE;
+		}
+		else if (tmp == 9)
+		{
+			task_card_type = CARD_TYPE_PLANEWITHONE;
+		}
+		else if (tmp == 10)
+		{
+			task_card_type = CARD_TYPE_PLANEWITHWING;
+		}
+		else if (tmp == 11)
+		{
+			task_card_type = CARD_TYPE_THREELINE;
+		}
+		else if (tmp == 12)
+		{
+			task_card_type = CARD_TYPE_TWO;
+		}
+		else if (tmp == 13)
+		{
+			task_card_type = CARD_TYPE_ONE;
+		}
+		else if (tmp == 14)
+		{
+			task_card_type = CARD_TYPE_BOMB;
+		}	
+	}*/
+}
+
+void Table::reset()
+{
+	nocall.clear();
+	start_seat = 0;
+	cur_seat = 0;
+	cur_action = 0;
+	ratio = 0;
+	
+	one_line = 0;
+	two_line = 0;
+	three_line = 0;
+	plane = 0;
+	bomb = 0;
+	rocket = 0;
+	spring = 0;
+	landlord_cnt = 0;
+	
+	last_cards.clear();
+	card_nums = 54;
+}
+
+void Table::vector_to_json_array(std::vector<Card> &cards, Jpacket &packet, string key)
+{
+	for (unsigned int i = 0; i < cards.size(); i++)
+	{
+//		printf("abcxxx:%d\n", cards[i].value);
+		packet.val[key].append(cards[i].value);
+	}
+
+	if (cards.size() == 0)
+	{
+		packet.val[key].append(0);
+	}
+}
+
+void Table::map_to_json_array(std::map<int, Card> &cards, Jpacket &packet, string key)
+{
+	std::map<int, Card>::iterator it;
+	for (it = cards.begin(); it != cards.end(); it++)
+	{
+		Card &card = it->second;
+		packet.val[key].append(card.value);
+	}
+}
+
+void Table::json_array_to_vector(std::vector<Card> &cards, Jpacket &packet, string key)
+{
+	Json::Value &val = packet.tojson();
+	
+	for (unsigned int i = 0; i < val[key].size(); i++)
+	{
+//		printf("abcyyy:%d\n", val[key][i].asInt());
+		Card card(val[key][i].asInt());
+		
+		cards.push_back(card);
+	}
+}
+
+int Table::next_seat(int pos)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        pos++;
+        if (pos >= 3)
+			pos = 0;
+		return pos;
+    }
+
+    return -1;
+}
+
+int Table::next_seat_spec(int pos)
+{
+	std::set<int>::iterator it;
+	
+    for (int i = 0; i < 3; i++)
+    {
+        pos++;
+        if (pos >= 3)
+			pos = 0;
+		
+		if (nocall.find(pos) != nocall.end())
+		{
+			continue;
+		}
+		
+		return pos;
+    }
+
+    return -1;
+}
+
+int Table::handler_preplay(Player *player)
+{
+	Json::Value &val = player->client->packet.tojson();
+	int cmd = val["cmd"].asInt();
+	int action = val["action"].asInt();
+
+	if (cmd == CLIENT_PREPLAY_ONE_REQ)
+	{
+		if (state != PREPLAY_ONE)
+		{
+			log.error("current state is [%d], request cmd is CLIENT_PREPLAY_ONE_REQ\n", state);
+			return -1;
+		}
+	}
+	
+	if (cmd == CLIENT_PREPLAY_TWO_REQ)
+	{
+		if (state != PREPLAY_TWO)
+		{
+			log.error("current state is [%d], request cmd is CLIENT_PREPLAY_TWO_REQ\n", state);
+			return -1;
+		}
+	}
+
+	Player *p = seats[cur_seat].player;
+	if (p != player)
+	{
+		log.error("current state is [%d], cur_seat id is [%d]\n", state, cur_seat);
+		if (p)
+		{
+			log.error("current player is [%d], but sumbit data is [%d]\n", p->uid, player->uid);
+		}
+		
+		return -1;
+	}
+	
+	if (state == PREPLAY_ONE)
+	{
+		handler_preplay_one(player, action);
+	}
+	else if (state == PREPLAY_TWO)
+	{
+		handler_preplay_two(player, action);
+	}
+	
+	return 0;
+}
+
+int Table::handler_preplay_one(Player *player, int action)
+{
+	if (action < cur_action)
+	{
+		log.error("action value is low.\n");
+		return -1;
+	}
+			
+	log.debug("PREPLAY_ONE uid[%d] action[%d] cur_action[%d]\n", player->uid, action, cur_action);
+		
+	if (action == ONE_RATIO)
+	{
+		ratio = ONE_RATIO;
+		landlord_seat = cur_seat;
+		cur_action = ONE_RATIO + 1;
+	}
+	else if (action == TWO_RATIO)
+	{
+		ratio = TWO_RATIO;
+		landlord_seat = cur_seat;
+		cur_action = TWO_RATIO + 1;
+	}
+	else if (action == THREE_RATIO)
+	{
+		ratio = THREE_RATIO;
+		landlord_seat = cur_seat;
+		
+	    Jpacket packet;
+	    packet.val["cmd"] = SERVER_PREPLAY_ONE_SUCC_BC;
+	    packet.val["uid"] = player->uid;
+		packet.val["seatid"] = cur_seat;
+		packet.val["table_type"] = table_type;
+		packet.val["action"] = action;
+		packet.val["ratio"] = ratio;
+		packet.val["landlord"] = landlord_seat;
+	    packet.end();
+	    broadcast(NULL, packet.tostring());
+		
+		// nobody call to restart game.
+		if (ratio == 0)
+		{
+			nocall_cnt++;
+			if (nocall_cnt > 2)
+			{
+				state = READY;
+				del_all_players();
+			}
+			else
+			{
+				start_game();	
+			}
+			return 0;
+		}
+		nocall_cnt = 0;
+		
+		if (table_type == 0)
+		{
+			cur_action = PLAYING;
+			cur_seat = start_seat = landlord_seat;
+			start_play();
+			return 0;
+		}
+		else
+		{
+			// 2 person no call landlord
+			if (nocall.size() == 2)
+			{
+				cur_action = PLAYING;
+				cur_seat = start_seat = landlord_seat;
+				start_play();
+				return 0;
+			}
+			
+			cur_action = ROB_LANDLORD;
+			landlord_seat_ori = landlord_seat;
+			start_seat = next_seat(landlord_seat);
+			cur_seat = start_seat;
+			start_preplay_two();
+			return 0;
+		}
+	}
+	else
+	{
+		if (table_type == 1)
+		{
+			nocall.insert(player->seatid);
+		}
+	}
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_PREPLAY_ONE_SUCC_BC;
+    packet.val["uid"] = player->uid;
+	packet.val["seatid"] = cur_seat;
+	packet.val["table_type"] = table_type;
+	packet.val["action"] = action;
+	packet.val["ratio"] = ratio;
+	packet.val["landlord"] = landlord_seat;
+    packet.end();
+    broadcast(NULL, packet.tostring());
+				
+	cur_seat = next_seat(cur_seat);
+	if (cur_seat == start_seat)
+	{
+		// nobody call to restart game.
+		if (ratio == 0)
+		{
+			nocall_cnt++;
+			if (nocall_cnt > 2)
+			{
+				state = READY;
+				del_all_players();
+			}
+			else
+			{
+				start_game();	
+			}
+			return 0;
+		}
+		nocall_cnt = 0;
+		
+		if (table_type == 0)
+		{
+			cur_action = PLAYING;
+			cur_seat = start_seat = landlord_seat;
+			start_play();
+			return 0;
+		}
+		else
+		{
+			// 2 person no call landlord
+			if (nocall.size() == 2)
+			{
+				cur_action = PLAYING;
+				cur_seat = start_seat = landlord_seat;
+				start_play();
+				return 0;
+			}
+			
+			cur_action = ROB_LANDLORD;
+			landlord_seat_ori = landlord_seat;
+			start_seat = next_seat(landlord_seat);
+			cur_seat = start_seat;
+			start_preplay_two();
+			return 0;
+		}
+	}
+		
+	start_preplay_one();
+	
+	return 0;
+}
+
+int Table::handler_preplay_two(Player *player, int action)
+{
+	if (action < cur_action)
+	{
+		log.error("action value is low.\n");
+		return -1;
+	}
+		
+	log.debug("PREPLAY_TWO uid[%d] action[%d] cur_action[%d]\n", player->uid, action, cur_action);
+		
+	if (action == ROB_LANDLORD)
+	{
+		ratio *= 2;
+		landlord_seat = cur_seat;
+		cur_action = ROB_LANDLORD;
+	}
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_PREPLAY_TWO_SUCC_BC;
+    packet.val["uid"] = player->uid;
+	packet.val["seatid"] = cur_seat;
+	packet.val["action"] = action;
+	packet.val["ratio"] = ratio;
+	packet.val["landlord"] = landlord_seat;
+    packet.end();
+    broadcast(NULL, packet.tostring());
+	
+	cur_seat = next_seat_spec(cur_seat);
+	if (cur_seat == start_seat || cur_seat == -1)
+	{
+		cur_action = PLAYING;
+		cur_seat = start_seat = landlord_seat;
+		start_play();
+		
+		return 0;
+	}
+	
+	if (landlord_seat_ori == cur_seat)
+	{
+		if (landlord_seat == landlord_seat_ori)
+		{
+			cur_action = PLAYING;
+			cur_seat = start_seat = landlord_seat;
+			start_play();
+		
+			return 0;
+		}
+	}
+	
+	start_preplay_two();
+	
+	return 0;
+}
+
+int Table::start_preplay_one()
+{
+	state = PREPLAY_ONE;
+	
+	Player *player = seats[cur_seat].player;
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_PREPLAY_ONE_BC;
+    packet.val["uid"] = player->uid;
+	packet.val["seatid"] = cur_seat;
+	packet.val["table_type"] = table_type;
+	packet.val["action"] = cur_action;
+    packet.end();
+    broadcast(NULL, packet.tostring());
+	
+//	log.debug("xxxxx[%d][%d]\n", cur_seat, cur_action);
+	
+	ev_timer_again(landlord.loop, &preplay_timer);
+	
+	return 0;
+}
+
+int Table::start_preplay_two()
+{
+	state = PREPLAY_TWO;
+	
+	Player *player = seats[cur_seat].player;
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_PREPLAY_TWO_BC;
+    packet.val["uid"] = player->uid;
+	packet.val["seatid"] = cur_seat;
+	packet.val["action"] = cur_action;
+    packet.end();
+    broadcast(NULL, packet.tostring());
+	
+    ev_timer_again(landlord.loop, &preplay_timer);
+	
+	return 0;
+}
+
+int Table::start_play()
+{
+	state = PLAYING;
+	log.debug("start play\n");
+	
+	ev_timer_stop(landlord.loop, &preplay_timer);
+	
+	Player *player = seats[landlord_seat].player;
+	community_cards.copy_to_hole_cards(player->hole_cards);
+	
+	setLandlord();
+	
+	time_t cur_time = 0;
+	time(&cur_time);
+	
+	int type = community_cards.get_card_type();
+	int coin = 0;
+	/*if (type == 1 || type == 2 || type == 3)
+		coin = 4;
+	else if (type == 4 || type == 5 || type == 6)
+		coin = 3;
+	else if (type == 7 || type == 8)
+		coin = 1;
+	
+	player->cur_coin = coin;
+	player->incr_coin();
+	inset_flow_log(cur_time, tid, player->uid, 2, ADD, player->cur_coin, player->coin);*/
+	
+	gen_random_task();
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_LANDLORD_BC;
+	packet.val["landlord"] = landlord_seat;
+	packet.val["ratio"] = ratio;
+	packet.val["card_type"] = type;
+	packet.val["task_type"]	= task_type;
+	packet.val["taskid"] = task_id;
+	packet.val["coin"] = player->coin;
+	packet.val["cur_coin"] = coin;
+	vector_to_json_array(community_cards.cards, packet, "comms");
+    packet.end();
+    broadcast(NULL, packet.tostring());
+	
+	cur_seat = landlord_seat;
+	cur_action = NEW_CARD;
+	
+	start_next_player();
+	
+	return 0;
+}
+
+void Table::setLandlord()
+{
+	if (landlord_seat == 0)
+	{
+		seats[0].player->role = LANDLORD;
+		seats[1].player->role = FARMER;
+		seats[2].player->role = FARMER;
+	} 
+	else if (landlord_seat == 1)
+	{
+		seats[0].player->role = FARMER;
+		seats[1].player->role = LANDLORD;
+		seats[2].player->role = FARMER;
+	} 
+	else if (landlord_seat == 2)
+	{
+		seats[0].player->role = FARMER;
+		seats[1].player->role = FARMER;
+		seats[2].player->role = LANDLORD;
+	}
+}
+
+void Table::play_timer_cb(struct ev_loop *loop, struct ev_timer *w, int revents)
+{
+    Table *table = (Table*)w->data;
+	ev_timer_stop(landlord.loop, &table->play_timer);
+	Player *player = table->seats[table->cur_seat].player;
+	if (table->state == PLAYING)
+	{
+		player->time_cnt++;
+		table->handler_play_card_exec(player, 0, 0);
+		log.debug("play_timer_cb timeout PLAYING no call\n");
+	}
+}
+
+void Table::robot_timer_cb(struct ev_loop *loop, struct ev_timer *w, int revents)
+{
+    Table *table = (Table*)w->data;
+	ev_timer_stop(landlord.loop, &table->robot_timer);
+	Player *player = table->seats[table->cur_seat].player;
+	if (table->state == PLAYING)
+	{
+		//int st = table->random(1,4);
+		//log.debug("robot_timer_cb:sleep t:[%d]\n",st);
+		//sleep(st);
+		table->handler_play_card_exec(player, 0, 1);
+	}
+}
+
+void Table::noPerson_timer_cb(struct ev_loop *loop, struct ev_timer *w, int revents)
+{
+    Table *table = (Table*)w->data;
+	if(table->state == PREPLAY_ONE){
+		ev_timer_stop(landlord.loop, &table->noPerson_timer);
+		return;
+	}
+	if(table->cur_players==3){
+		return;
+	}
+	int diff = 3-table->cur_players;
+
+	int ret = landlord.cache_rc->command("hgetall hrob:need");
+	int currNum = 0;
+	if (ret >= 0 && landlord.cache_rc->is_array_return_ok() >=0)
+	{
+		char kStr[10];
+		sprintf(kStr,"%d",table->vid);
+		currNum = landlord.cache_rc->get_value_as_int(kStr);
+		if(currNum<0){
+			currNum = 0;
+		}
+	}
+	log.debug("#########join robot[%d][%d]########\n",currNum,diff);
+	currNum += diff;
+	ret = landlord.cache_rc->command("hset hrob:need %d %d",table->vid,currNum);
+	ev_timer_stop(landlord.loop, &table->noPerson_timer);
+//	ev_timer_stop(landlord.loop, &table->noPerson_timer);
+	/*vector<string> robotArr = table->split(landlord.conf["robotList"].asString(),",");
+	for(int i=0;i<3-curr_ready;i++){
+		table->getUrl(robotArr.at(i));
+		sleep(1);
+	}*/
+}
+
+//字符串分割函数
+/*std::vector<std::string> Table::split(std::string str,std::string pattern)
+{
+    std::string::size_type pos;
+    std::vector<std::string> result;
+    str+=pattern;//扩展字符串以方便操作
+    int size=str.size();
+
+    for(int i=0; i<size; i++)
+    {
+        pos=str.find(pattern,i);
+        if(pos<size)
+        {
+            std::string s=str.substr(i,pos-i);
+            result.push_back(s);
+            i=pos+pattern.size()-1;
+        }
+    }
+    return result;
+}
+
+void Table::getUrl(string user)
+{
+	int ind = time(NULL)%4;
+	string islandlord = "5";
+	string isrob = "5";
+	if(ind==0){
+		islandlord = "3";
+		isrob = "5";
+	}else if(ind==1){
+		islandlord = "3";
+		isrob = "4";
+	}else{}
+
+	string cmd = landlord.conf["robotCmd"].asString()+"user="+
+			user+"&passwd=123456&islandlord="+islandlord+"&isrob="+isrob;
+
+    CURL *curl;
+    CURLcode res;
+    FILE *fp;
+    if ((fp = fopen(landlord.conf["robotLog"].asString().c_str(), "w")) == NULL)  // 返回结果用文件存储
+        return;
+    struct curl_slist *headers = NULL;
+    headers = curl_slist_append(headers, "Accept: Agent-007");
+    curl = curl_easy_init();    // 初始化
+
+    if (curl)
+    {
+        //curl_easy_setopt(curl, CURLOPT_PROXY, "10.99.60.201:8080");// 代理
+    	log.debug("#########111111########\n");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);// 改协议头
+        curl_easy_setopt(curl, CURLOPT_URL,cmd.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp); //将返回的http头输出到fp指向的文件
+        curl_easy_setopt(curl, CURLOPT_HEADERDATA, fp); //将返回的html主体数据输出到fp指向的文件
+        res = curl_easy_perform(curl);   // 执行
+        log.debug("#########2222222########\n");
+        if (res != 0) {
+        	log.debug("#########333333########\n");
+            curl_slist_free_all(headers);
+            curl_easy_cleanup(curl);
+        }
+        fclose(fp);
+		log.debug("#########robot is [%s]########\n",cmd.c_str());
+    }
+}*/
+
+void Table::rocket_timer_cb(struct ev_loop *loop, struct ev_timer *w, int revents)
+{
+    Table *table = (Table*)w->data;
+	ev_timer_stop(landlord.loop, &table->rocket_timer);
+	// Player *player = table->seats[table->cur_seat].player;
+	if (table->state == PLAYING)
+	{
+		table->start_next_player();
+		log.debug("rocket_timer_cb\n");
+	}
+}
+
+int Table::handler_play_card(Player *player)
+{
+	if (state != PLAYING)
+	{
+		log.error("handler_play_card state error\n");
+		return -1;
+	}
+	
+	Player *p = seats[cur_seat].player;
+	if (p != player)
+	{
+		log.error("current player is [%d], but sumbit data is [%d]\n", p->uid, player->uid);
+		return -1;
+	}
+	
+	Json::Value &val = player->client->packet.tojson();
+	
+	int action = val["action"].asInt();
+	int card_type = val["card_type"].asInt();
+	
+	if (action != cur_action)
+	{
+		log.error("handler_play_card current action is error\n");
+		return -1;
+	}
+	
+	if (card_type == 0 && cur_action == NEW_CARD)
+	{
+		log.error("handler_play_card current card_type is error\n");
+		return -1;
+	}
+	
+	handler_play_card_exec(player, card_type, 0);
+	
+	return 0;
+}
+
+int Table::handler_play_card_exec(Player *player, int card_type, int flag)
+{
+	ev_timer_stop(landlord.loop, &play_timer);
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_PLAY_CARD_SUCC_BC;
+    packet.val["uid"] = player->uid;
+	packet.val["seatid"] = cur_seat;
+	packet.val["action"] = cur_action;
+	Json::Value::ArrayIndex i = 0;
+//	log.debug("#card_exec[%d][%d][%d][%d]#\n",card_type,flag,cur_action,player->uid);
+	// server ai
+	if (card_type == 0)
+	{
+		packet.val["action"] = cur_action;
+
+		if (flag == 0)
+		{
+			if (cur_action == NEW_CARD)
+			{
+#if 1
+				// search a fit card to play
+				start_seat = cur_seat;
+				last_cards.clear();
+				player->hole_cards.robot(last_cards);
+				last_playerId = player->uid;
+				card_type = CardAnalysis::get_card_type(last_cards);
+				out_cards.insert(out_cards.end(), last_cards.begin(), last_cards.end());
+				vector_to_json_array(last_cards, packet, "cards");
+				packet.val["card_nums"] = player->hole_cards.size();
+				packet.val["card_type"] = card_type;
+				card_nums -= last_cards.size();
+#else
+				card_type = 1;
+				start_seat = cur_seat;
+				int value = player->hole_cards.get_one_little_card();
+				Card card(value);
+				last_cards.clear();
+				last_cards.push_back(card);
+				out_cards.insert(out_cards.end(), last_cards.begin(), last_cards.end());
+
+				packet.val["cards"][i] = value;
+				packet.val["card_nums"] = player->hole_cards.size();
+				packet.val["card_type"] = card_type;
+				card_nums--;
+#endif
+			}
+			else
+			{
+				card_type = 0;
+				packet.val["cards"][i] = 0;
+				packet.val["card_nums"] = player->hole_cards.size();
+				packet.val["card_type"] = card_type;
+			}
+		}
+		else
+		{
+			if (cur_action == NEW_CARD)
+			{
+				// search a fit card to play
+				start_seat = cur_seat;
+				last_cards.clear();
+				player->hole_cards.robot(last_cards);
+				last_playerId = player->uid;
+/*				fprintf(stdout, "&&&&&&Start NCard&&&&&\n");
+				Card::dump_cards(last_cards);
+				fprintf(stdout, "&&&&&&End NCard&&&&&&\n");*/
+				card_type = CardAnalysis::get_card_type(last_cards);
+				out_cards.insert(out_cards.end(), last_cards.begin(), last_cards.end());
+				vector_to_json_array(last_cards, packet, "cards");
+				packet.val["card_nums"] = player->hole_cards.size();
+				packet.val["card_type"] = card_type;
+				card_nums -= last_cards.size();
+			}
+			else
+			{
+				if (player->hole_cards.size() > 20)
+				{
+					card_type = 0;
+					packet.val["cards"][i] = 0;
+					packet.val["card_nums"] = player->hole_cards.size();
+					packet.val["card_type"] = card_type;
+				}
+				else
+				{
+					std::vector<Card> cur_cards;
+					player->hole_cards.copy_cards(&cur_cards);
+					int last_is_partner = player->role == players.at(last_playerId)->role?1:0;
+					int ret = card_find.tip(last_cards, cur_cards,players.at(last_playerId)->hole_cards.size(),last_is_partner);
+					if (ret == 0)
+					{
+						if (card_find.results.size() > 0)
+						{
+							start_seat = cur_seat;
+							last_cards.clear();
+							last_cards = card_find.results[0];
+							last_playerId = player->uid;
+							card_type = CardAnalysis::get_card_type(last_cards);
+							out_cards.insert(out_cards.end(), last_cards.begin(), last_cards.end());
+							player->hole_cards.remove(last_cards);
+							vector_to_json_array(last_cards, packet, "cards");
+							packet.val["card_nums"] = player->hole_cards.size();
+							packet.val["card_type"] = card_type;
+							card_nums -= last_cards.size();
+						}
+						else
+						{
+							card_type = 0;
+							packet.val["cards"][i] = 0;
+							packet.val["card_nums"] = player->hole_cards.size();
+							packet.val["card_type"] = card_type;
+						}
+					}
+					else
+					{
+						card_type = 0;
+						packet.val["cards"][i] = 0;
+						packet.val["card_nums"] = player->hole_cards.size();
+						packet.val["card_type"] = card_type;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		// analyse new.
+		// compare analyse new and old.
+		// old = new.
+		player->time_cnt = 0;
+		std::vector<Card> cur_cards;
+		json_array_to_vector(cur_cards, player->client->packet, "cards");
+		int my_card_type = 0;
+		int ret = 0;
+		if (cur_action == NEW_CARD)
+		{
+			ret = CardAnalysis::get_card_type(cur_cards);
+			my_card_type = ret;
+		}
+		else
+		{
+			ret = CardAnalysis::isGreater(last_cards, cur_cards, &my_card_type);
+		}
+		
+		// todo delete
+		card_type = my_card_type;
+//		log.debug("cur_action[%d], ret[%d], my_card_type[%d]\n",cur_action, ret, my_card_type);
+		if (ret > 0 && my_card_type == card_type)
+		{
+			start_seat = cur_seat;
+			packet.val["action"] = cur_action;
+			player->hole_cards.remove(cur_cards);
+			vector_to_json_array(cur_cards, packet, "cards");
+			packet.val["card_nums"] = player->hole_cards.size();
+			packet.val["card_type"] = card_type;
+			
+			last_cards.clear();
+			last_cards = cur_cards;
+			last_playerId = player->uid;
+			out_cards.insert(out_cards.end(), last_cards.begin(), last_cards.end());
+			card_nums -= cur_cards.size();
+		}
+		else // card err as pass
+		{
+			if (cur_action == NEW_CARD)
+			{
+				card_type = 1;
+				start_seat = cur_seat;
+				int value = player->hole_cards.get_one_little_card();
+				Card card(value);
+				last_cards.clear();
+				last_cards.push_back(card);
+				last_playerId = player->uid;
+				out_cards.insert(out_cards.end(), last_cards.begin(), last_cards.end());
+				packet.val["cards"][i] = value;
+				packet.val["card_nums"] = player->hole_cards.size();
+				packet.val["card_type"] = card_type;
+				card_nums--;	
+			}
+			else
+			{
+				card_type = 0;
+				packet.val["cards"][i] = 0;
+				packet.val["card_nums"] = player->hole_cards.size();
+				packet.val["card_type"] = card_type;
+			}
+		}
+	}
+	card_type_count(player, card_type);
+	packet.val["ratio"] = ratio; // cur ratio
+    packet.end();
+    broadcast(NULL, packet.tostring());
+	
+	cur_card_type = card_type;
+	if (task_type == 3)
+	{
+		if (cur_card_type == task_card_type)
+			player->task_card_type_cnt++;
+	}
+	
+	// to count landlord to get spring
+	if (cur_seat == landlord_seat)
+	{
+		if (card_type > 0)
+		{
+			landlord_cnt++;
+		}
+	}
+	
+//	log.debug("player[%d] card_nums[%d]\n", player->uid, player->hole_cards.size());
+	// if card nums is zero that game over.
+	if (player->hole_cards.size() == 0)
+	{
+		game_end();
+		return 0;
+	}
+	
+	// robot
+	if (card_type == CARD_TYPE_ROCKET)
+	{
+		cur_action = NEW_CARD;
+		
+		// start_next_player();
+		ev_timer_again(landlord.loop, &rocket_timer);
+	
+		return 0;
+	}
+	
+	if (player->time_cnt >= 2)
+	{
+//		log.debug("server robot [%d]\n", player->uid);
+		player->time_cnt = 0;
+		player->robot = 1;
+		Jpacket packet;
+		packet.val["cmd"] = SERVER_ROBOT_BC;
+		packet.val["uid"] = player->uid;
+		packet.val["seatid"] = player->seatid;
+		packet.val["robot"] = player->robot;
+		packet.end();
+		broadcast(NULL, packet.tostring());
+	}
+	
+	cur_seat = next_seat(cur_seat);
+	if (cur_seat == start_seat)
+	{
+		// new card
+		cur_action = NEW_CARD;
+	}
+	else
+	{
+		// follow card
+		cur_action = FOLLOW_CARD;
+	}
+
+	start_next_player();
+	
+	return 0;
+}
+
+void Table::reset_robot(Player *player)
+{
+	if(player->robot==2){
+		log.debug("######reset_robot.uid[%d]###\n",player->uid);
+		landlord.cache_rc->command("rpush lrob:ids %d",player->uid);
+	}
+}
+
+void Table::card_type_count(Player *player, int card_type)
+{
+	if (card_type == CARD_TYPE_ONELINE)
+	{
+		one_line++;
+		player->one_line++;
+	}
+	else if (card_type == CARD_TYPE_TWOLINE)
+	{
+		two_line++;
+		player->two_line++;
+	}
+	else if (card_type == CARD_TYPE_THREELINE)
+	{
+		three_line++;
+		player->three_line++;
+	}
+	else if (card_type == CARD_TYPE_PLANEWITHONE)
+	{
+		plane++;
+		player->plane++;
+	}
+	else if (card_type == CARD_TYPE_PLANEWITHWING)
+	{
+		plane++;
+		player->plane++;
+	}
+	else if (card_type == CARD_TYPE_BOMB)
+	{
+		bomb++;
+		player->bomb++;
+		ratio *= 2;
+	}
+	else if (card_type == CARD_TYPE_ROCKET)
+	{
+		rocket++;
+		player->rocket++;
+		ratio *= 2;
+	}
+}
+
+int Table::start_next_player()
+{
+	Player *player = seats[cur_seat].player;
+	
+	if (player->robot == 1)
+	{
+//		log.debug("server robot [%d]\n", player->uid);
+		player->time_cnt = 0;
+//		player->robot = 1;
+		//handler_play_card_exec(player, 0, 1);
+		ev_timer_again(landlord.loop, &robot_timer);
+		return 0;
+	}
+/*	
+	if (player->time_cnt >= 1)
+	{
+		log.debug("server robot [%d]\n", player->uid);
+		player->time_cnt = 0;
+		player->robot = 1;
+		Jpacket packet;
+		packet.val["cmd"] = SERVER_ROBOT_BC;
+		packet.val["uid"] = player->uid;
+		packet.val["seatid"] = player->seatid;
+		packet.val["robot"] = player->robot;
+		packet.end();
+		broadcast(NULL, packet.tostring());
+		
+		// handler_play_card_exec(player, 0, 1);
+		ev_timer_again(landlord.loop, &robot_timer);
+		return 0;
+	}
+*/
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_PLAY_CARD_BC;
+    packet.val["uid"] = player->uid;
+	packet.val["seatid"] = cur_seat;
+	packet.val["action"] = cur_action;
+    packet.end();
+    broadcast(NULL, packet.tostring());
+	
+	ev_timer_again(landlord.loop, &play_timer);
+	
+	return 0;
+}
+
+int Table::game_end()
+{
+	landlord.game->dump_msg("game_end");
+//	landlord.game->dump_game_info("game_end");
+	ev_timer_stop(landlord.loop, &play_timer);
+	
+	Player *player = NULL;
+	
+	player = seats[cur_seat].player;
+	
+	if (player->role == 0)
+	{
+		if (landlord_cnt == 1)
+		{
+			spring++;
+			ratio *= 2;
+		}
+	}
+	else
+	{
+		if (card_nums == 34)
+		{
+			spring++;
+			ratio *= 2;
+		}
+	}
+	
+	count_money(player);
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_GAME_END_BC;
+    packet.val["uid"] = player->uid;
+	packet.val["seatid"] = player->seatid;
+	packet.val["win_type"] = player->role; // 0 is farmer 1 is landlord
+	packet.val["ratio"] = ratio;
+	packet.val["plane"] = plane;
+	packet.val["bomb"] = bomb;
+	packet.val["rocket"] = rocket;
+	packet.val["spring"] = spring;
+	packet.val["taskid"] = task_id;
+	packet.val["task_finish"] = task_finish;
+	
+    std::map<int, Player*>::iterator it;
+	int i = 0;
+    for (it = players.begin(); it != players.end(); it++)
+    {
+        player = it->second;
+		reset_robot(player);
+	    packet.val["players"][i]["seatid"] = player->seatid;
+		packet.val["players"][i]["uid"] = player->uid;
+		packet.val["players"][i]["level"] = player->level;
+		packet.val["players"][i]["exp"] = player->exp;
+//		packet.val["players"][i]["cooldou"] = player->cooldou;
+		packet.val["players"][i]["money"] = player->money;
+		packet.val["players"][i]["coin"] = player->coin;
+		packet.val["players"][i]["cur_money"] = player->cur_money;
+		packet.val["players"][i]["cur_coin"] = player->cur_coin;
+		packet.val["players"][i]["total_board"] = player->total_board;
+		packet.val["players"][i]["total_win"] = player->total_win;
+		packet.val["players"][i]["pcount"] = player->pcount;
+		packet.val["players"][i]["role"] = player->role;
+		map_to_json_array_spec(player->hole_cards.cards, packet, i);
+		i++;
+//		log.debug("player[%d] role[%d] cur_money[%d]\n", player->uid, player->role, player->cur_money);
+    }
+    packet.end();
+	broadcast(NULL, packet.tostring());
+	
+	state = END_GAME;
+	ev_timer_again(landlord.loop, &preready_timer);
+	
+	return 0;
+}
+
+void Table::count_money(Player *player)
+{
+	Player *landlord_player = NULL;
+	Player *farmer_player[2];
+	time_t cur_time = 0;
+	time(&cur_time);
+	time_t ts = ((cur_time + 28800) / 86400) * 86400 - 28800;
+	int coin = 0;
+    
+	int i = 0;
+	Player *p = NULL;
+	std::map<int, Player*>::iterator it;
+    for (it = players.begin(); it != players.end(); it++)
+    {
+        p = it->second;
+		if (p->role == 1) // landlord
+		{
+			landlord_player = p;
+		}
+		else
+		{
+			farmer_player[i] = p;
+			i++;
+		}
+		p->get_info();
+    }
+	
+/*	task_finish = 0;
+	if (landlord.conf["random-task"]["enable"].asInt() == 1)
+	{
+		if (task_type == 3)
+		{
+			if (player->task_card_type_cnt > 0)
+			{
+				task_finish = 1;
+				log.debug("3b random-task ratio[%d] coin[%d]\n", ratio, coin);
+				ratio *= landlord.conf["random-task"]["type3"].asInt();
+				log.debug("3e random-task ratio[%d] coin[%d]\n", ratio, coin);
+			}
+		}
+		else
+		{
+			if (cur_card_type == task_card_type)
+			{
+				task_finish = 1;
+				if (task_type == 1)
+				{
+					log.debug("1b random-task ratio[%d] coin[%d]\n", ratio, coin);
+					ratio *= landlord.conf["random-task"]["type1"].asInt();
+					log.debug("1e random-task ratio[%d] coin[%d]\n", ratio, coin);
+				}
+				else if (task_type == 2)
+				{
+					log.debug("2b random-task ratio[%d] coin[%d]\n", ratio, coin);
+					coin += landlord.conf["random-task"]["type2"].asInt();
+					log.debug("2e random-task ratio[%d] coin[%d]\n", ratio, coin);
+				}
+			}
+		}
+	}*/
+	
+	// to count money
+	if (player->role == 0) // farmer win
+	{
+		log.debug("b f fix-task ratio[%d] coin[%d]\n", ratio, coin);
+		if (ratio >= 96 && ratio < 192)
+		{
+			coin += landlord.conf["fix-task"]["96"].asInt() / 2;
+		}
+		else if (ratio >= 192 && ratio < 384)
+		{
+			coin += landlord.conf["fix-task"]["192"].asInt() / 2;
+		}
+		else if (ratio >= 384 && ratio < 768)
+		{
+			coin += landlord.conf["fix-task"]["384"].asInt() / 2;
+		}
+		else if (ratio >= 768 && ratio < 1536)
+		{
+			coin += landlord.conf["fix-task"]["768"].asInt() / 2;
+		}
+		else if (ratio >= 1536)
+		{
+			coin += landlord.conf["fix-task"]["1536"].asInt() / 2;
+		}
+		log.debug("e f fix-task ratio[%d] coin[%d]\n", ratio, coin);
+		
+		int total_bet = ratio * base_money * 2;
+		int bet = total_bet / 2;
+		if (landlord_player->money >= total_bet)
+		{
+			bet = bet;
+			//log.debug("f1total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		else
+		{
+			bet = landlord_player->money / 2;
+			//log.debug("f2total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		
+		total_bet = 0;
+		if (farmer_player[0]->money < bet)
+		{
+			farmer_player[0]->cur_money = farmer_player[0]->money * 0.9; // all the money
+			total_bet += farmer_player[0]->money;
+			//log.debug("f3total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		else
+		{
+			farmer_player[0]->cur_money = bet * 0.9;
+			total_bet += bet;
+			//log.debug("f4total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		
+		if (farmer_player[1]->money < bet)
+		{
+			farmer_player[1]->cur_money = farmer_player[1]->money * 0.9; // all the money
+			total_bet += farmer_player[1]->money;
+			//log.debug("f5total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		else
+		{
+			farmer_player[1]->cur_money = bet * 0.9;
+			total_bet += bet;
+			//log.debug("f6total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		
+		inset_flow_log(cur_time, tid, 0, 1, ADD, (int)(total_bet * 0.1), 0);
+		landlord_player->cur_money = total_bet;
+		
+		log.debug("fwin_landlord[%d] [%d] [%d]\n",landlord_player->uid, landlord_player->money, landlord_player->cur_money);
+		log.debug("fwin_farmer0[%d] [%d] [%d]\n",farmer_player[0]->uid, farmer_player[0]->money, farmer_player[0]->cur_money);
+		log.debug("fwin_farmer1[%d] [%d] [%d]\n", farmer_player[1]->uid,farmer_player[1]->money, farmer_player[1]->cur_money);
+		
+		landlord_player->cur_coin = 0;
+		farmer_player[0]->cur_coin = coin;
+		farmer_player[1]->cur_coin = coin;
+	
+		landlord_player->incr_money(SUB);
+		landlord_player->incr_coin();
+		landlord_player->incr_expr(1);
+		landlord_player->incr_total_board(vid, 1);
+		landlord_player->incr_pcount(1);
+		inset_flow_log(cur_time, tid, landlord_player->uid, 1, SUB, landlord_player->cur_money, landlord_player->money);
+		incr_day_total_board(ts, landlord_player->uid);
+		
+		farmer_player[0]->incr_money(ADD);
+		farmer_player[0]->incr_coin();
+		farmer_player[0]->incr_expr(3);
+		farmer_player[0]->incr_total_board(vid, 1);
+		farmer_player[0]->incr_total_win(vid, 1);
+		farmer_player[0]->incr_pcount(1);
+		inset_flow_log(cur_time, tid, farmer_player[0]->uid, 1, ADD, farmer_player[0]->cur_money, farmer_player[0]->money);
+		incr_day_total_board(ts, farmer_player[0]->uid);
+		incr_day_win_board(ts, farmer_player[0]->uid);
+		
+		farmer_player[1]->incr_money(ADD);
+		farmer_player[1]->incr_coin();
+		farmer_player[1]->incr_expr(3);
+		farmer_player[1]->incr_total_board(vid, 1);
+		farmer_player[1]->incr_total_win(vid, 1);
+		farmer_player[1]->incr_pcount(1);
+		inset_flow_log(cur_time, tid, farmer_player[1]->uid, 1, ADD, farmer_player[1]->cur_money, farmer_player[1]->money);
+		incr_day_total_board(ts, farmer_player[1]->uid);
+		incr_day_win_board(ts, farmer_player[1]->uid);
+		
+		inset_flow_log(cur_time, tid, landlord_player->uid, 2, ADD, landlord_player->cur_coin, landlord_player->coin);
+		inset_flow_log(cur_time, tid, landlord_player->uid, 2, ADD, farmer_player[0]->cur_coin, farmer_player[0]->coin);
+		inset_flow_log(cur_time, tid, landlord_player->uid, 2, ADD, farmer_player[0]->cur_coin, farmer_player[0]->coin);
+	}
+	else // landlord win
+	{
+		log.debug("b l fix-task ratio[%d] coin[%d]\n", ratio, coin);
+		if (ratio >= 96 && ratio < 192)
+		{
+			coin += landlord.conf["fix-task"]["96"].asInt();
+		}
+		else if (ratio >= 192 && ratio < 384)
+		{
+			coin += landlord.conf["fix-task"]["192"].asInt();
+		}
+		else if (ratio >= 384 && ratio < 768)
+		{
+			coin += landlord.conf["fix-task"]["384"].asInt();
+		}
+		else if (ratio >= 768 && ratio < 1536)
+		{
+			coin += landlord.conf["fix-task"]["768"].asInt();
+		}
+		else if (ratio >= 1536)
+		{
+			coin += landlord.conf["fix-task"]["1536"].asInt();
+		}
+		log.debug("e l fix-task ratio[%d] coin[%d]\n", ratio, coin);
+		
+		int total_bet = ratio * base_money * 2;
+		int bet = total_bet / 2;
+		if (landlord_player->money >= total_bet)
+		{
+			bet = bet;
+			//log.debug("l1total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		else
+		{
+			bet = landlord_player->money / 2;
+			//log.debug("l2total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		
+		total_bet = 0;
+		if (farmer_player[0]->money < bet)
+		{
+			farmer_player[0]->cur_money = farmer_player[0]->money; // all the money
+			total_bet += farmer_player[0]->money;
+			//log.debug("l3total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		else
+		{
+			farmer_player[0]->cur_money = bet;
+			total_bet += bet;
+			//log.debug("l4total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		
+		if (farmer_player[1]->money < bet)
+		{
+			farmer_player[1]->cur_money = farmer_player[1]->money; // all the money
+			total_bet += farmer_player[1]->money;
+			//log.debug("l5total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		else
+		{
+			farmer_player[1]->cur_money = bet;
+			total_bet += bet;
+			//log.debug("l6total_bet[%d] bet[%d]\n", total_bet, bet);
+		}
+		
+		inset_flow_log(cur_time, tid, 0, 1, ADD, (int)(total_bet * 0.1), 0);
+		landlord_player->cur_money = (int)(total_bet * 0.9);
+		log.debug("lwin_landlord[%d] [%d] [%d]\n",landlord_player->uid, landlord_player->money, landlord_player->cur_money);
+		log.debug("lwin_farmer[%d] [%d] [%d]\n",farmer_player[0]->uid, farmer_player[0]->money, farmer_player[0]->cur_money);
+		log.debug("lwin_farmer[%d] [%d] [%d]\n", farmer_player[1]->uid,farmer_player[1]->money, farmer_player[1]->cur_money);
+		
+		landlord_player->cur_coin = coin;
+		farmer_player[0]->cur_coin = 0;
+		farmer_player[1]->cur_coin = 0;
+		
+		landlord_player->incr_money(ADD);
+		landlord_player->incr_coin();
+		landlord_player->incr_expr(3);
+		landlord_player->incr_total_board(vid, 1);
+		landlord_player->incr_total_win(vid, 1);
+		landlord_player->incr_pcount(1);
+		inset_flow_log(cur_time, tid, landlord_player->uid, 1, ADD, landlord_player->cur_money, landlord_player->money);
+		incr_day_total_board(ts, landlord_player->uid);
+		incr_day_win_board(ts, landlord_player->uid);
+		
+		farmer_player[0]->incr_money(SUB);
+		farmer_player[0]->incr_coin();
+		farmer_player[0]->incr_expr(1);
+		farmer_player[0]->incr_total_board(vid, 1);
+		farmer_player[0]->incr_pcount(1);
+		inset_flow_log(cur_time, tid, farmer_player[0]->uid, 1, SUB, farmer_player[0]->cur_money, farmer_player[0]->money);
+		incr_day_total_board(ts, farmer_player[0]->uid);
+		
+		farmer_player[1]->incr_money(SUB);
+		farmer_player[1]->incr_coin();
+		farmer_player[1]->incr_expr(1);
+		farmer_player[1]->incr_total_board(vid, 1);
+		farmer_player[1]->incr_pcount(1);
+		inset_flow_log(cur_time, tid, farmer_player[1]->uid, 1, SUB, farmer_player[1]->cur_money, farmer_player[1]->money);
+		incr_day_total_board(ts, farmer_player[1]->uid);
+		
+		inset_flow_log(cur_time, tid, landlord_player->uid, 2, ADD, landlord_player->cur_coin, landlord_player->coin);
+		inset_flow_log(cur_time, tid, landlord_player->uid, 2, ADD, farmer_player[0]->cur_coin, farmer_player[0]->coin);
+		inset_flow_log(cur_time, tid, landlord_player->uid, 2, ADD, farmer_player[0]->cur_coin, farmer_player[0]->coin);
+		
+		log.debug("base[%d] ratio[%d]\n", base_money, ratio);
+	}
+}
+
+void Table::map_to_json_array_spec(std::map<int, Card> &cards, Jpacket &packet, int index)
+{
+	std::map<int, Card>::iterator it;
+	for (it = cards.begin(); it != cards.end(); it++)
+	{
+		Card &card = it->second;
+		packet.val["players"][index]["holes"].append(card.value);
+	}
+}
+
+void Table::preready_timer_cb(struct ev_loop *loop, struct ev_timer *w, int revents)
+{
+    Table *table = (Table*)w->data;
+	ev_timer_stop(landlord.loop, &table->preready_timer);
+	table->handler_game_preready();
+}
+
+int Table::handler_chat(Player *player)
+{
+    Json::Value &val = player->client->packet.tojson();
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_CHAT_BC;
+    packet.val["uid"] = player->uid;
+    packet.val["seatid"] = player->seatid;
+    packet.val["str"] = val["str"];
+	packet.val["tag"] = val["tag"];
+    packet.end();
+    broadcast(NULL, packet.tostring());
+		
+	return 0;
+}
+
+int Table::handler_face(Player *player)
+{
+    Json::Value &val = player->client->packet.tojson();
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_FACE_BC;
+    packet.val["uid"] = player->uid;
+    packet.val["seatid"] = player->seatid;
+    packet.val["faceid"] = val["faceid"];
+    packet.end();
+    broadcast(NULL, packet.tostring());
+		
+	return 0;
+}
+
+int Table::handler_logout(Player *player)
+{	
+	if (state != READY && state != END_GAME)
+	{
+		log.error("handler_logout state[%d]\n", state);
+		return -1;	
+	}
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_LOGOUT_BC;
+    packet.val["uid"] = player->uid;
+    packet.val["seatid"] = player->seatid;
+    packet.val["type"] = player->logout_type;
+    packet.end();
+    broadcast(NULL, packet.tostring());
+		
+	return 0;
+}
+
+int Table::handler_rebind(Player *player)
+{
+	player->stop_offline_timer();
+	unicast_join_table_succ(player);
+	
+	player->time_cnt = 0;
+	player->robot = 0;
+	
+    Jpacket packet;
+    packet.val["cmd"] = SERVER_REBIND_UC;
+	log.debug("handler_rebind: state[%d] ready_players[%d]\n", state, ready_players);
+	Player *p;
+    std::map<int, Player*>::iterator it;
+	int i = 0;
+    for (it = players.begin(); it != players.end(); it++)
+    {
+        p = it->second;
+		packet.val["players"][i]["ready"] = p->ready;
+	    packet.val["players"][i]["seatid"] = p->seatid;
+		packet.val["players"][i]["uid"] = p->uid;
+	    packet.val["players"][i]["name"] = p->name;
+		packet.val["players"][i]["sex"] = p->sex;
+		packet.val["players"][i]["birthday"] = p->birthday;
+		packet.val["players"][i]["zone"] = p->zone;
+		packet.val["players"][i]["level"] = p->level;
+		packet.val["players"][i]["exp"] = p->exp;
+//		packet.val["players"][i]["cooldou"] = p->cooldou;
+		packet.val["players"][i]["money"] = p->money;
+		packet.val["players"][i]["coin"] = p->coin;
+		packet.val["players"][i]["total_board"] = p->total_board;
+		packet.val["players"][i]["total_win"] = p->total_win;
+		packet.val["players"][i]["pcount"] = p->pcount;
+		packet.val["players"][i]["role"] = p->role;
+		packet.val["players"][i]["card_nums"] = p->hole_cards.size();
+		packet.val["players"][i]["robot"] = p->robot;
+		packet.val["players"][i]["vtime"] = player->vtime;
+		packet.val["players"][i]["rtime"] = player->rtime;
+		i++;
+    }
+	
+    packet.val["vid"] = player->vid;
+    packet.val["zid"] = player->zid;
+	packet.val["tid"] = player->tid;
+	packet.val["uid"] = player->uid;
+	packet.val["seatid"] = player->seatid;
+	packet.val["state"] = state; // must be ready
+	packet.val["landlord"] = landlord_seat; // who is landlord
+	packet.val["ratio"] = ratio; // cur ratio
+	
+//	log.debug("handler_rebind xxx: %d %d\n\n", state, PLAYING);
+	if (state == READY)
+	{
+		player->start_offline_timer();
+		log.debug("handler_rebind READY: %d\n", state);
+	}
+	else if (state == PREPLAY_ONE)
+	{
+		log.debug("handler_rebind PREPLAY_ONE: %d\n", state);
+		packet.val["table_type"] = table_type;
+		packet.val["cur_seat"] = cur_seat;
+		packet.val["action"] = cur_action;
+		packet.val["taskid"] = task_id;
+		map_to_json_array(player->hole_cards.cards, packet, "holes");
+	}
+	else if (state == PREPLAY_TWO)
+	{
+		log.debug("handler_rebind PREPLAY_TWO: %d\n", state);
+		packet.val["cur_seat"] = cur_seat;
+		packet.val["action"] = cur_action;
+		packet.val["taskid"] = task_id;
+		map_to_json_array(player->hole_cards.cards, packet, "holes");
+	}
+	else if (state == PLAYING)
+	{
+		log.debug("handler_rebind PLAYING: %d\n", state);
+		packet.val["cur_seat"] = cur_seat;
+		packet.val["action"] = cur_action;
+		packet.val["task_type"]	= task_type;
+		packet.val["taskid"] = task_id;
+		map_to_json_array(player->hole_cards.cards, packet, "holes");
+		vector_to_json_array(community_cards.cards, packet, "comms");
+		vector_to_json_array(out_cards, packet, "out_cards");
+		if (cur_action == FOLLOW_CARD)
+		{
+			vector_to_json_array(last_cards, packet, "last_cards");	
+		}
+	}
+	else if (state == END_GAME)
+	{
+		log.debug("handler_rebind END_GAME: %d\n", state);
+		// nothing todo
+	}
+	
+    packet.end();
+	unicast(player, packet.tostring());
+	
+	return 0;
+}
+
+int Table::handler_robot(Player *player)
+{
+	if (state != PLAYING)
+	{
+		log.debug("handler_robot state[%d]\n", state);
+		return -1;
+	}
+	
+	Json::Value &val = player->client->packet.tojson();
+	player->robot = val["robot"].asInt();
+/*	if (player->robot != 0)
+	{
+		player->robot = 1;
+	}*/
+	player->time_cnt = 0;
+	
+	Jpacket packet;
+	packet.val["cmd"] = SERVER_ROBOT_BC;
+	packet.val["uid"] = player->uid;
+	packet.val["seatid"] = player->seatid;
+	packet.val["robot"] = player->robot;
+	packet.end();
+	broadcast(NULL, packet.tostring());
+	
+	if (player->robot >= 1 && cur_seat == player->seatid)
+	{
+//		log.debug("robot running right row.\n");
+		handler_play_card_exec(player, 0, 1);
+	}
+	
+	return 0;
+}
+
+// flag = 0 is money flag = 1 is coin
+int Table::inset_flow_log(int ts, int tid, int uid, int flag, int action, int value, int cur_value)
+{
+	/*if (flag == 2)
+	{
+		if (value == 0)
+		{
+			return 0;
+		}
+	}
+	
+	Json::Value root;
+	root["uid"] = uid;
+	root["tid"] = tid;
+	root["vid"] = vid;
+	root["zid"] = zid;
+	root["ts"] = ts;
+	root["type"] = 0;
+	root["m_type"] = flag;
+	root["action"] = action;
+	root["value"] = value;
+	root["cur_value"] = cur_value;
+	
+	Json::FastWriter writer;
+	std::string data = landlord.logAgent.passwd + writer.write(root);
+
+	landlord.logAgent.send(data);*/
+	
+	return 0;	
+}
+
+int Table::incr_day_total_board(int ts, int uid)
+{
+#if 0
+	int ret;
+	ret = landlord.log_rc->command("hincrby b:%d:%d total %d", ts, uid, 1);
+	if (ret < 0)
+	{
+		log.debug("incr_day_board error.\n");
+		return -1;
+	}
+#endif	
+	return 0;
+}
+
+int Table::incr_day_win_board(int ts, int uid)
+{
+#if 0
+	int ret;
+	ret = landlord.log_rc->command("hincrby b:%d:%d win %d", ts, uid, 1);
+	if (ret < 0)
+	{
+		log.debug("incr_day_board error.\n");
+		return -1;
+	}
+#endif	
+	return 0;
+	
+}
+
+/*
+key ts tid uid type action value
+
+f:ts:tid:uid
+
+
+key ts uid total win
+
+b:ts:uid
+*/
+

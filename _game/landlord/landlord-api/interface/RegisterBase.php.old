@@ -1,0 +1,81 @@
+<?php
+	/**
+	 *  注册基类
+	 */
+    class RegisterBase {
+    	
+    	public static function userInfo($user_info,$uid) {
+    		$user_info['uid'] = (int)$uid;
+    		$user_info['sex'] = (int)$user_info['sex'];
+    		$user_info['money'] = (int)$user_info['money'];
+    		$user_info['rmb'] = (int)$user_info['rmb'];
+    		$user_info['coin'] = (int)$user_info['coin'];
+    		$user_info['login_days'] = (int)$user_info['login_days'];
+    		$user_info['is_get'] = (int)$user_info['is_get'];
+    		$total_lose = $user_info['total_board'] - $user_info['total_win'];
+    		$user_info['history'] = array((int)$user_info['total_win'], (int)$total_lose);
+    		$user_info['total_board'] = (int)$user_info['total_board'];
+    		$user_info['total_win'] = (int)$user_info['total_win'];
+    		$user_info['exp'] = (int)$user_info['exp'];
+    		$user_info['hasrc'] = 0;
+    		return $user_info;
+    	}
+    	
+		public static function createUser($user,$pwd,$sex) {
+			$now = time();
+			$salt = Game::$salt_password;
+			$user_info = array();
+			$user_info["user"] = $user;
+			$user_info["name"] = $user;
+			$user_info["password"] = md5($pwd . $salt);			
+			$user_info["salt"] = $salt;
+			$user_info["status"] = 1; // 0：为封号的
+			$user_info["sex"] = $sex;
+			$user_info["money"] = Game::$init_money;
+			$user_info["last_earn_money"] = 0;
+			$user_info["rmb"] = 0;
+			$user_info["coin"] = Game::$init_coin;
+			if ($sex == 0)
+				$user_info["avater"] = "mm.png";
+			else
+				$user_info["avater"] = "gg.png";
+			$user_info["skey"] = md5(time().$salt);
+			$user_info["login_days"] = 1;
+			$user_info["is_get"] = 0;
+			$user_info["total_board"] = 0;
+			$user_info["total_win"] = 0;
+			$user_info["level"] = 0;
+			$user_info["exp"] = 0;
+			$user_info["vid"] = 0;
+			$user_info["heartbeat_at"] = $now;
+			$user_info["play_count"] = 0;
+			$user_info["give_money"] = 0;
+			$user_info["pay_count"] = 0;
+			$user_info["pay_ok"] = 0;
+			$user_info["pay_ng"] = 0;
+			$user_info["broke_num"] = 0;
+			$user_info["broke_time"] = 0;
+			$user_info["vtime"] = 0;
+			$user_info["vlevel"] = 0;
+			$user_info["rtime"] = 0;
+			$user_info["create_time"] = $now;
+			$user_info["update_time"] = $now;
+			
+			return $user_info;
+		}
+		
+		public static function createPlayerMark($uid,$cpid,$appid,$imsi,$imei,$mtype,$reg_ver,$pkg) {
+			$user_info = array();
+			$user_info["uid"] = $uid;
+			$user_info["cpId"] = $cpid;
+			$user_info["appId"] = $appid;
+			$user_info["imsi"] = $imsi;
+			$user_info["imei"] = $imei; // 0：为封号的
+			$user_info["mtype"] = $mtype;
+			$user_info["create_time"] = time();	
+			$user_info["reg_ver"] = $reg_ver;
+			$user_info["package"] = $pkg;
+			return $user_info;
+		}
+    }
+?>

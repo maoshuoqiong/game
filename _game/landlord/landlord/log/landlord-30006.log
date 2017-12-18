@@ -1,0 +1,1103 @@
+[debug][2016-11-05 10:13:48] read body failed[Operation now in progress]
+[error][2016-11-05 10:13:48] unknow err in read body[14]
+[error][2016-11-05 10:13:48] unknow err in read body[13]
+[error][2016-11-05 10:13:48] unknow err in read body[12]
+[error][2016-11-05 10:13:48] unknow err in read body[11]
+[error][2016-12-01 16:11:11] fd[4] recieve an error len package
+[error][2016-12-01 16:50:13] fd[4] recieve an error len package
+[error][2016-12-01 17:31:38] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:31] unknow err in read body[11]
+[error][2017-01-06 17:24:31] fd[4] recieve an error len package
+[error][2017-01-06 17:24:36] unknow err in read body[11]
+[error][2017-01-06 17:24:41] unknow err in read body[11]
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:46] unknow err in read body[11]
+[error][2017-01-06 17:24:46] fd[4] recieve an error len package
+[error][2017-01-06 17:24:46] fd[4] recieve an error len package
+[error][2017-01-06 17:24:46] fd[4] recieve an error len package
+[error][2017-01-06 17:24:46] fd[4] recieve an error len package
+[error][2017-01-06 17:25:11] fd[4] recieve an error len package
+[error][2017-01-06 17:25:12] fd[4] recieve an error len package
+[debug][2017-01-06 17:25:21] connection close in read header[11]
+[error][2017-01-06 17:25:21] fd[4] recieve an error len package
+[debug][2017-08-08 16:48:12] player[586995] login success on game.cc
+[debug][2017-08-08 16:48:16] #########join robot[0][2]########
+[debug][2017-08-08 16:48:22] player[1055] login success on game.cc
+[debug][2017-08-08 16:48:26] player[1056] login success on game.cc
+[debug][2017-08-09 08:38:54] player[586995] login success on game.cc
+[debug][2017-08-09 08:38:58] #########join robot[0][2]########
+[debug][2017-08-09 08:39:08] player[1090] login success on game.cc
+[debug][2017-08-09 08:39:10] player[1089] login success on game.cc
+[debug][2017-08-09 08:39:17] tid[1] start game[586995][1090][1089]
+[debug][2017-08-09 08:40:47] fwin_landlord M[1089][52436][7200] P [0]
+[debug][2017-08-09 08:40:47] fwin_farmer0 M[1090][52299][3240] P [0]
+[debug][2017-08-09 08:40:47] fwin_farmer1 M[586995][103490][3240] P [0]
+[debug][2017-08-09 08:40:47] end_game base[150] ratio[24],[1089][1090][586995]
+[debug][2017-08-09 08:40:47] ##lastUp_day_time[1502239247]
+[debug][2017-08-09 08:40:55] player[586995] login success on game.cc
+[debug][2017-08-09 08:40:59] #########join robot[0][2]########
+[debug][2017-08-09 08:41:04] player[1092] login success on game.cc
+[debug][2017-08-09 08:41:08] player[1091] login success on game.cc
+[debug][2017-08-09 08:41:12] tid[2] start game[586995][1092][1091]
+[debug][2017-08-09 08:42:50] lwin_landlord M[1092] [109880] [44311] P [0]
+[debug][2017-08-09 08:42:50] lwin_farmer M[1091] [0] [20435] P [0]
+[debug][2017-08-09 08:42:50] lwin_farmer M[586995] [74690] [28800] P [0]
+[debug][2017-08-09 08:42:50] end_game base[150] ratio[192],[1092][1091][586995]
+[debug][2017-08-09 08:42:50] tid[2]broke_free_give[1091][2000].
+[debug][2017-08-09 08:42:57] player[586995] login success on game.cc
+[debug][2017-08-09 08:43:01] #########join robot[0][2]########
+[debug][2017-08-09 08:43:06] player[1094] login success on game.cc
+[debug][2017-08-09 08:43:09] player[1093] login success on game.cc
+[debug][2017-08-09 08:43:15] tid[1] start game[586995][1094][1093]
+[debug][2017-08-09 08:45:09] lwin_landlord M[586995] [141911] [67221] P [0]
+[debug][2017-08-09 08:45:09] lwin_farmer M[1093] [35444] [37345] P [0]
+[debug][2017-08-09 08:45:09] lwin_farmer M[1094] [13815] [37345] P [0]
+[debug][2017-08-09 08:45:09] end_game base[150] ratio[384],[586995][1093][1094]
+[debug][2017-08-09 08:45:16] player[586995] login success on game.cc
+[debug][2017-08-09 13:57:02] player[586995] login success on game.cc
+[debug][2017-08-09 13:57:06] #########join robot[0][2]########
+[debug][2017-08-09 13:57:14] player[1096] login success on game.cc
+[debug][2017-08-09 13:57:18] player[1095] login success on game.cc
+[debug][2017-08-09 13:57:22] tid[1] start game[586995][1096][1095]
+[debug][2017-08-09 13:58:47] lwin_landlord M[586995] [213759] [71848] P [0]
+[debug][2017-08-09 13:58:47] lwin_farmer M[1095] [31144] [57600] P [0]
+[debug][2017-08-09 13:58:47] lwin_farmer M[1096] [0] [22232] P [0]
+[debug][2017-08-09 13:58:47] end_game base[150] ratio[384],[586995][1095][1096]
+[debug][2017-08-09 13:58:47] tid[1]broke_free_give[1096][2000].
+[debug][2017-08-09 13:58:55] player[586995] login success on game.cc
+[debug][2017-08-09 13:59:28] player[586995] login success on game.cc
+[debug][2017-08-09 13:59:32] #########join robot[0][2]########
+[debug][2017-08-09 13:59:41] player[1097] login success on game.cc
+[debug][2017-08-09 13:59:41] player[1098] login success on game.cc
+[debug][2017-08-09 13:59:48] tid[1] start game[586995][1097][1098]
+[debug][2017-08-09 14:01:12] fwin_landlord M[1097][46658][900] P [0]
+[debug][2017-08-09 14:01:12] fwin_farmer0 M[1098][333341][405] P [0]
+[debug][2017-08-09 14:01:12] fwin_farmer1 M[586995][214164][405] P [0]
+[debug][2017-08-09 14:01:12] end_game base[150] ratio[3],[1097][1098][586995]
+[debug][2017-08-09 14:01:20] player[586995] login success on game.cc
+[debug][2017-08-09 14:01:24] #########join robot[0][2]########
+[debug][2017-08-09 14:01:36] player[1099] login success on game.cc
+[debug][2017-08-09 14:01:36] player[1100] login success on game.cc
+[debug][2017-08-09 14:01:42] tid[2] start game[586995][1099][1100]
+[debug][2017-08-09 14:03:55] fwin_landlord M[1100][33553][57600] P [0]
+[debug][2017-08-09 14:03:55] fwin_farmer0 M[1099][405997][25920] P [0]
+[debug][2017-08-09 14:03:55] fwin_farmer1 M[586995][240084][25920] P [0]
+[debug][2017-08-09 14:03:55] end_game base[150] ratio[192],[1100][1099][586995]
+[debug][2017-08-09 14:04:02] player[586995] login success on game.cc
+[debug][2017-08-09 14:04:06] #########join robot[0][2]########
+[debug][2017-08-09 14:04:12] player[1102] login success on game.cc
+[debug][2017-08-09 14:04:16] player[1101] login success on game.cc
+[debug][2017-08-09 14:04:23] tid[1] start game[586995][1102][1101]
+[debug][2017-08-09 14:04:52] preplay_timer_cb timeout PREPLAY_TWO no call
+[debug][2017-08-09 14:06:30] fwin_landlord M[1102][42726][28800] P [0]
+[debug][2017-08-09 14:06:30] fwin_farmer0 M[1101][83681][12960] P [0]
+[debug][2017-08-09 14:06:30] fwin_farmer1 M[586995][253044][12960] P [0]
+[debug][2017-08-09 14:06:30] end_game base[150] ratio[96],[1102][1101][586995]
+[debug][2017-08-09 14:06:39] player[586995] login success on game.cc
+[debug][2017-08-09 14:06:43] #########join robot[0][2]########
+[debug][2017-08-09 14:06:52] player[1103] login success on game.cc
+[debug][2017-08-09 14:06:54] player[1104] login success on game.cc
+[debug][2017-08-09 14:07:01] tid[2] start game[586995][1103][1104]
+[debug][2017-08-09 14:08:33] fwin_landlord M[1104][20505][28800] P [0]
+[debug][2017-08-09 14:08:33] fwin_farmer0 M[1103][89294][12960] P [0]
+[debug][2017-08-09 14:08:33] fwin_farmer1 M[586995][266004][12960] P [0]
+[debug][2017-08-09 14:08:33] end_game base[150] ratio[96],[1104][1103][586995]
+[debug][2017-08-09 14:08:41] player[586995] login success on game.cc
+[debug][2017-08-09 14:08:45] #########join robot[0][2]########
+[debug][2017-08-09 14:08:51] player[1106] login success on game.cc
+[debug][2017-08-09 14:08:57] player[1105] login success on game.cc
+[debug][2017-08-09 14:09:00] tid[1] start game[586995][1106][1105]
+[debug][2017-08-09 14:10:37] fwin_landlord M[1105][23101][14400] P [0]
+[debug][2017-08-09 14:10:37] fwin_farmer0 M[1106][62726][6480] P [0]
+[debug][2017-08-09 14:10:37] fwin_farmer1 M[586995][272484][6480] P [0]
+[debug][2017-08-09 14:10:37] end_game base[150] ratio[48],[1105][1106][586995]
+[debug][2017-08-09 14:10:45] player[586995] login success on game.cc
+[debug][2017-08-09 14:10:49] #########join robot[0][2]########
+[debug][2017-08-09 14:10:54] player[1108] login success on game.cc
+[debug][2017-08-09 14:10:57] player[1107] login success on game.cc
+[debug][2017-08-09 14:11:03] tid[2] start game[586995][1108][1107]
+[debug][2017-08-09 14:12:13] lwin_landlord M[1107] [46137] [3240] P [0]
+[debug][2017-08-09 14:12:13] lwin_farmer M[1108] [37507] [1800] P [0]
+[debug][2017-08-09 14:12:13] lwin_farmer M[586995] [270684] [1800] P [0]
+[debug][2017-08-09 14:12:13] end_game base[150] ratio[12],[1107][1108][586995]
+[debug][2017-08-09 14:12:20] player[586995] login success on game.cc
+[debug][2017-08-09 14:12:24] #########join robot[0][2]########
+[debug][2017-08-09 14:12:29] player[1110] login success on game.cc
+[debug][2017-08-09 14:12:30] player[1109] login success on game.cc
+[debug][2017-08-09 14:12:33] tid[1] start game[586995][1110][1109]
+[debug][2017-08-09 14:13:27] lwin_landlord M[1110] [75423] [12960] P [0]
+[debug][2017-08-09 14:13:27] lwin_farmer M[1109] [75597] [7200] P [0]
+[debug][2017-08-09 14:13:27] lwin_farmer M[586995] [263484] [7200] P [0]
+[debug][2017-08-09 14:13:27] end_game base[150] ratio[48],[1110][1109][586995]
+[debug][2017-08-09 14:13:35] player[586995] login success on game.cc
+[debug][2017-08-09 14:13:39] #########join robot[0][2]########
+[debug][2017-08-09 14:13:44] player[1112] login success on game.cc
+[debug][2017-08-09 14:13:46] player[1111] login success on game.cc
+[debug][2017-08-09 14:13:56] tid[2] start game[586995][1112][1111]
+[debug][2017-08-09 14:14:40] play_timer_cb timeout PLAYING no call
+[debug][2017-08-09 14:15:35] fwin_landlord M[586995][256284][7200] P [0]
+[debug][2017-08-09 14:15:35] fwin_farmer0 M[1111][71571][3240] P [0]
+[debug][2017-08-09 14:15:35] fwin_farmer1 M[1112][30653][3240] P [0]
+[debug][2017-08-09 14:15:35] end_game base[150] ratio[24],[586995][1111][1112]
+[debug][2017-08-09 14:15:42] player[586995] login success on game.cc
+[debug][2017-08-09 14:21:28] player[586995] login success on game.cc
+[debug][2017-08-09 14:21:32] #########join robot[0][2]########
+[debug][2017-08-09 14:21:36] player[1120] login success on game.cc
+[debug][2017-08-09 14:21:39] player[1119] login success on game.cc
+[debug][2017-08-09 14:21:44] tid[1] start game[586995][1120][1119]
+[debug][2017-08-09 14:23:28] fwin_landlord M[1119][21077][71060] P [0]
+[debug][2017-08-09 14:23:28] fwin_farmer0 M[1120][47484][22492] P [0]
+[debug][2017-08-09 14:23:28] fwin_farmer1 M[586995][305425][41461] P [0]
+[debug][2017-08-09 14:23:28] end_game base[150] ratio[768],[1119][1120][586995]
+[debug][2017-08-09 14:23:35] player[586995] login success on game.cc
+[debug][2017-08-09 16:22:23] player[586995] login success on game.cc
+[debug][2017-08-09 16:22:27] #########join robot[0][2]########
+[debug][2017-08-09 16:22:35] player[1144] login success on game.cc
+[debug][2017-08-09 16:22:38] player[1143] login success on game.cc
+[debug][2017-08-09 16:22:43] tid[1] start game[586995][1144][1143]
+[debug][2017-08-09 16:24:18] lwin_landlord M[1144] [99589] [12960] P [0]
+[debug][2017-08-09 16:24:18] lwin_farmer M[1143] [21018] [7200] P [0]
+[debug][2017-08-09 16:24:18] lwin_farmer M[586995] [343135] [7200] P [0]
+[debug][2017-08-09 16:24:18] end_game base[150] ratio[48],[1144][1143][586995]
+[debug][2017-08-09 16:24:26] player[586995] login success on game.cc
+[debug][2017-08-09 16:24:30] #########join robot[0][2]########
+[debug][2017-08-09 16:24:39] player[1146] login success on game.cc
+[debug][2017-08-09 16:24:42] player[1145] login success on game.cc
+[debug][2017-08-09 16:24:47] tid[2] start game[586995][1146][1145]
+[debug][2017-08-09 16:25:59] fwin_landlord M[1146][34263][14400] P [0]
+[debug][2017-08-09 16:25:59] fwin_farmer0 M[1145][72671][6480] P [0]
+[debug][2017-08-09 16:25:59] fwin_farmer1 M[586995][349615][6480] P [0]
+[debug][2017-08-09 16:25:59] end_game base[150] ratio[48],[1146][1145][586995]
+[debug][2017-08-09 16:26:06] player[586995] login success on game.cc
+[debug][2017-08-09 16:26:10] #########join robot[0][2]########
+[debug][2017-08-09 16:26:21] player[1147] login success on game.cc
+[debug][2017-08-09 16:26:21] player[1148] login success on game.cc
+[debug][2017-08-09 16:26:25] tid[1] start game[586995][1147][1148]
+[debug][2017-08-09 16:27:58] lwin_landlord M[1147] [91844] [1620] P [0]
+[debug][2017-08-09 16:27:58] lwin_farmer M[1148] [76202] [900] P [0]
+[debug][2017-08-09 16:27:58] lwin_farmer M[586995] [348715] [900] P [0]
+[debug][2017-08-09 16:27:58] end_game base[150] ratio[6],[1147][1148][586995]
+[debug][2017-08-09 16:28:06] player[586995] login success on game.cc
+[debug][2017-08-09 16:28:10] #########join robot[0][2]########
+[debug][2017-08-09 16:28:15] player[1150] login success on game.cc
+[debug][2017-08-09 16:28:18] player[1149] login success on game.cc
+[debug][2017-08-09 16:28:21] tid[2] start game[586995][1150][1149]
+[debug][2017-08-09 16:29:41] fwin_landlord M[1150][76477][7200] P [0]
+[debug][2017-08-09 16:29:41] fwin_farmer0 M[1149][40733][3240] P [0]
+[debug][2017-08-09 16:29:41] fwin_farmer1 M[586995][351955][3240] P [0]
+[debug][2017-08-09 16:29:41] end_game base[150] ratio[24],[1150][1149][586995]
+[debug][2017-08-09 16:29:48] player[586995] login success on game.cc
+[debug][2017-08-09 16:29:52] #########join robot[0][2]########
+[debug][2017-08-09 16:29:59] player[1152] login success on game.cc
+[debug][2017-08-09 16:30:04] player[1151] login success on game.cc
+[debug][2017-08-09 16:30:13] tid[1] start game[586995][1152][1151]
+[debug][2017-08-09 16:30:58] play_timer_cb timeout PLAYING no call
+[debug][2017-08-09 16:31:25] lwin_landlord M[586995] [358435] [6480] P [0]
+[debug][2017-08-09 16:31:25] lwin_farmer M[1151] [81524] [3600] P [0]
+[debug][2017-08-09 16:31:25] lwin_farmer M[1152] [29498] [3600] P [0]
+[debug][2017-08-09 16:31:25] end_game base[150] ratio[24],[586995][1151][1152]
+[debug][2017-08-09 16:31:32] player[586995] login success on game.cc
+[debug][2017-08-09 16:31:36] #########join robot[0][2]########
+[debug][2017-08-09 16:31:42] player[1154] login success on game.cc
+[debug][2017-08-09 16:31:47] player[1153] login success on game.cc
+[debug][2017-08-09 16:31:52] tid[2] start game[586995][1154][1153]
+[debug][2017-08-09 16:33:26] fwin_landlord M[1153][83280][7200] P [0]
+[debug][2017-08-09 16:33:26] fwin_farmer0 M[1154][91960][3240] P [0]
+[debug][2017-08-09 16:33:26] fwin_farmer1 M[586995][361675][3240] P [0]
+[debug][2017-08-09 16:33:26] end_game base[150] ratio[24],[1153][1154][586995]
+[debug][2017-08-09 16:33:34] player[586995] login success on game.cc
+[debug][2017-08-09 16:33:38] #########join robot[0][2]########
+[debug][2017-08-09 16:33:44] player[1155] login success on game.cc
+[debug][2017-08-09 16:33:47] player[1156] login success on game.cc
+[debug][2017-08-09 16:33:53] tid[1] start game[586995][1155][1156]
+[debug][2017-08-09 16:35:18] fwin_landlord M[1156][81197][1800] P [0]
+[debug][2017-08-09 16:35:18] fwin_farmer0 M[1155][35179][810] P [0]
+[debug][2017-08-09 16:35:18] fwin_farmer1 M[586995][362485][810] P [0]
+[debug][2017-08-09 16:35:18] end_game base[150] ratio[6],[1156][1155][586995]
+[debug][2017-08-09 16:35:25] player[586995] login success on game.cc
+[debug][2017-08-09 16:35:29] #########join robot[0][2]########
+[debug][2017-08-09 16:35:35] player[1158] login success on game.cc
+[debug][2017-08-09 16:35:39] player[1157] login success on game.cc
+[debug][2017-08-09 16:35:45] tid[2] start game[586995][1158][1157]
+[debug][2017-08-09 16:37:35] lwin_landlord M[586995] [365725] [3240] P [0]
+[debug][2017-08-09 16:37:35] lwin_farmer M[1157] [25753] [1800] P [0]
+[debug][2017-08-09 16:37:35] lwin_farmer M[1158] [18940] [1800] P [0]
+[debug][2017-08-09 16:37:35] end_game base[150] ratio[12],[586995][1157][1158]
+[debug][2017-08-09 16:37:43] player[586995] login success on game.cc
+[debug][2017-08-09 16:37:47] #########join robot[0][2]########
+[debug][2017-08-09 16:37:52] player[1159] login success on game.cc
+[debug][2017-08-09 16:37:52] player[1160] login success on game.cc
+[debug][2017-08-09 16:38:00] tid[1] start game[586995][1159][1160]
+[debug][2017-08-09 16:39:15] fwin_landlord M[1159][58451][7200] P [0]
+[debug][2017-08-09 16:39:15] fwin_farmer0 M[1160][31864][3240] P [0]
+[debug][2017-08-09 16:39:15] fwin_farmer1 M[586995][368965][3240] P [0]
+[debug][2017-08-09 16:39:15] end_game base[150] ratio[24],[1159][1160][586995]
+[debug][2017-08-09 16:39:22] player[586995] login success on game.cc
+[debug][2017-08-09 16:39:26] #########join robot[0][2]########
+[debug][2017-08-09 16:39:33] player[1161] login success on game.cc
+[debug][2017-08-09 16:39:35] player[1162] login success on game.cc
+[debug][2017-08-09 16:39:40] tid[2] start game[586995][1161][1162]
+[debug][2017-08-09 16:40:27] play_timer_cb timeout PLAYING no call
+[debug][2017-08-09 16:41:32] fwin_landlord M[586995][253765][115200] P [0]
+[debug][2017-08-09 16:41:32] fwin_farmer0 M[1161][140668][51840] P [0]
+[debug][2017-08-09 16:41:32] fwin_farmer1 M[1162][379860][51840] P [0]
+[debug][2017-08-09 16:41:32] end_game base[150] ratio[384],[586995][1161][1162]
+[debug][2017-08-09 16:41:39] player[586995] login success on game.cc
+[debug][2017-08-09 16:41:43] #########join robot[0][2]########
+[debug][2017-08-09 16:41:54] player[1163] login success on game.cc
+[debug][2017-08-09 16:41:54] player[1164] login success on game.cc
+[debug][2017-08-09 16:42:04] tid[1] start game[586995][1163][1164]
+[debug][2017-08-09 16:42:59] play_timer_cb timeout PLAYING no call
+[debug][2017-08-09 16:43:26] fwin_landlord M[1164][0][29324] P [0]
+[debug][2017-08-09 16:43:26] fwin_farmer0 M[1163][296327][13195] P [0]
+[debug][2017-08-09 16:43:26] fwin_farmer1 M[586995][266960][13195] P [0]
+[debug][2017-08-09 16:43:26] end_game base[150] ratio[384],[1164][1163][586995]
+[debug][2017-08-09 16:43:26] tid[1]broke_free_give[1164][2000].
+[debug][2017-08-09 16:43:34] player[586995] login success on game.cc
+[debug][2017-08-09 16:43:35] uid[1164] money[2000] min_money[20000] money too less.
+[debug][2017-08-09 16:43:38] #########join robot[0][2]########
+[debug][2017-08-09 16:43:48] player[1166] login success on game.cc
+[debug][2017-08-09 16:43:49] player[1165] login success on game.cc
+[debug][2017-08-09 16:43:59] tid[2] start game[586995][1166][1165]
+[debug][2017-08-09 16:45:15] fwin_landlord M[1166][332][28800] P [0]
+[debug][2017-08-09 16:45:15] fwin_farmer0 M[1165][55426][12960] P [0]
+[debug][2017-08-09 16:45:15] fwin_farmer1 M[586995][279920][12960] P [0]
+[debug][2017-08-09 16:45:15] end_game base[150] ratio[96],[1166][1165][586995]
+[debug][2017-08-09 16:45:15] tid[2]broke_free_give[1166][1668].
+[debug][2017-08-09 16:45:22] player[586995] login success on game.cc
+[debug][2017-08-09 16:45:26] #########join robot[0][2]########
+[debug][2017-08-09 16:45:34] player[1168] login success on game.cc
+[debug][2017-08-09 16:45:37] player[1167] login success on game.cc
+[debug][2017-08-09 16:45:47] tid[1] start game[586995][1168][1167]
+[debug][2017-08-09 16:47:29] lwin_landlord M[586995] [286400] [6480] P [0]
+[debug][2017-08-09 16:47:29] lwin_farmer M[1167] [34598] [3600] P [0]
+[debug][2017-08-09 16:47:29] lwin_farmer M[1168] [20131] [3600] P [0]
+[debug][2017-08-09 16:47:29] end_game base[150] ratio[24],[586995][1167][1168]
+[debug][2017-08-09 16:47:37] player[586995] login success on game.cc
+[debug][2017-08-09 16:47:41] #########join robot[0][2]########
+[debug][2017-08-09 16:47:52] player[1169] login success on game.cc
+[debug][2017-08-09 16:47:52] player[1170] login success on game.cc
+[debug][2017-08-09 16:48:02] tid[2] start game[586995][1169][1170]
+[debug][2017-08-09 16:49:32] lwin_landlord M[586995] [288020] [1620] P [0]
+[debug][2017-08-09 16:49:32] lwin_farmer M[1169] [50933] [900] P [0]
+[debug][2017-08-09 16:49:32] lwin_farmer M[1170] [78028] [900] P [0]
+[debug][2017-08-09 16:49:32] end_game base[150] ratio[6],[586995][1169][1170]
+[debug][2017-08-09 16:49:39] player[586995] login success on game.cc
+[debug][2017-08-09 16:49:43] #########join robot[0][2]########
+[debug][2017-08-09 16:49:50] player[1171] login success on game.cc
+[debug][2017-08-09 16:49:53] player[1172] login success on game.cc
+[debug][2017-08-09 16:49:59] tid[1] start game[586995][1171][1172]
+[debug][2017-08-09 16:50:18] tid[1] start game[586995][1171][1172]
+[debug][2017-08-09 16:50:34] tid[1] start game[586995][1171][1172]
+[debug][2017-08-09 16:50:55] player[586995] login success on game.cc
+[debug][2017-08-09 16:50:59] #########join robot[0][2]########
+[debug][2017-08-09 16:51:04] player[1174] login success on game.cc
+[debug][2017-08-09 16:51:06] player[1173] login success on game.cc
+[debug][2017-08-09 16:51:12] tid[1] start game[586995][1174][1173]
+[debug][2017-08-09 16:52:56] fwin_landlord M[1174][92637][7200] P [0]
+[debug][2017-08-09 16:52:56] fwin_farmer0 M[1173][55594][3240] P [0]
+[debug][2017-08-09 16:52:56] fwin_farmer1 M[586995][291260][3240] P [0]
+[debug][2017-08-09 16:52:56] end_game base[150] ratio[24],[1174][1173][586995]
+[debug][2017-08-09 16:53:04] player[586995] login success on game.cc
+[debug][2017-08-09 16:53:08] #########join robot[0][2]########
+[debug][2017-08-09 16:53:14] player[1176] login success on game.cc
+[debug][2017-08-09 16:53:16] player[1175] login success on game.cc
+[debug][2017-08-09 16:53:24] tid[2] start game[586995][1176][1175]
+[debug][2017-08-09 16:54:25] fwin_landlord M[1176][23663][14400] P [0]
+[debug][2017-08-09 16:54:25] fwin_farmer0 M[1175][319840][6480] P [0]
+[debug][2017-08-09 16:54:25] fwin_farmer1 M[586995][297740][6480] P [0]
+[debug][2017-08-09 16:54:25] end_game base[150] ratio[48],[1176][1175][586995]
+[debug][2017-08-09 16:54:33] player[586995] login success on game.cc
+[debug][2017-08-09 16:54:37] #########join robot[0][2]########
+[debug][2017-08-09 16:54:45] player[1178] login success on game.cc
+[debug][2017-08-09 16:54:46] player[1177] login success on game.cc
+[debug][2017-08-09 16:54:53] tid[1] start game[586995][1178][1177]
+[debug][2017-08-09 16:56:35] play_timer_cb timeout PLAYING no call
+[debug][2017-08-09 16:56:49] fwin_landlord M[1178][475769][7200] P [0]
+[debug][2017-08-09 16:56:49] fwin_farmer0 M[1177][96506][3240] P [0]
+[debug][2017-08-09 16:56:49] fwin_farmer1 M[586995][300980][3240] P [0]
+[debug][2017-08-09 16:56:49] end_game base[150] ratio[24],[1178][1177][586995]
+[debug][2017-08-09 16:56:56] player[586995] login success on game.cc
+[debug][2017-08-09 16:57:00] #########join robot[0][2]########
+[debug][2017-08-09 16:57:10] player[1180] login success on game.cc
+[debug][2017-08-09 16:57:11] player[1179] login success on game.cc
+[debug][2017-08-09 16:57:18] tid[2] start game[586995][1180][1179]
+[debug][2017-08-09 16:57:57] play_timer_cb timeout PLAYING no call
+[debug][2017-08-09 16:59:06] lwin_landlord M[586995] [313940] [12960] P [0]
+[debug][2017-08-09 16:59:06] lwin_farmer M[1179] [21347] [7200] P [0]
+[debug][2017-08-09 16:59:06] lwin_farmer M[1180] [447472] [7200] P [0]
+[debug][2017-08-09 16:59:06] end_game base[150] ratio[48],[586995][1179][1180]
+[debug][2017-08-09 16:59:14] player[586995] login success on game.cc
+[debug][2017-08-09 16:59:18] #########join robot[0][2]########
+[debug][2017-08-09 16:59:21] player[1181] login success on game.cc
+[debug][2017-08-09 16:59:21] player[1182] login success on game.cc
+[debug][2017-08-09 16:59:29] tid[1] start game[586995][1181][1182]
+[debug][2017-08-09 17:00:56] fwin_landlord M[1182][0][76284] P [0]
+[debug][2017-08-09 17:00:56] fwin_farmer0 M[1181][101803][34327] P [0]
+[debug][2017-08-09 17:00:56] fwin_farmer1 M[586995][348267][34327] P [0]
+[debug][2017-08-09 17:00:56] end_game base[150] ratio[384],[1182][1181][586995]
+[debug][2017-08-09 17:00:56] tid[1]broke_free_give[1182][2000].
+[debug][2017-08-09 17:01:03] player[586995] login success on game.cc
+[debug][2017-08-09 17:01:07] #########join robot[0][2]########
+[error][2017-08-09 17:01:17] slow redis: [1]
+[debug][2017-08-09 17:01:17] player[1183] login success on game.cc
+[error][2017-08-09 17:01:17] slow cmd: [1]
+[debug][2017-08-09 17:01:17] player[1184] login success on game.cc
+[debug][2017-08-09 17:01:24] tid[2] start game[586995][1183][1184]
+[debug][2017-08-09 17:03:06] lwin_landlord M[586995] [354747] [6480] P [0]
+[debug][2017-08-09 17:03:06] lwin_farmer M[1183] [66527] [3600] P [0]
+[debug][2017-08-09 17:03:06] lwin_farmer M[1184] [89135] [3600] P [0]
+[debug][2017-08-09 17:03:06] end_game base[150] ratio[24],[586995][1183][1184]
+[debug][2017-08-09 17:03:14] player[586995] login success on game.cc
+[debug][2017-08-09 17:03:18] #########join robot[0][2]########
+[debug][2017-08-09 17:03:23] player[1185] login success on game.cc
+[debug][2017-08-09 17:03:24] player[1186] login success on game.cc
+[debug][2017-08-09 17:03:34] tid[1] start game[586995][1185][1186]
+[debug][2017-08-09 17:05:15] lwin_landlord M[586995] [361227] [6480] P [0]
+[debug][2017-08-09 17:05:15] lwin_farmer M[1185] [83869] [3600] P [0]
+[debug][2017-08-09 17:05:15] lwin_farmer M[1186] [77412] [3600] P [0]
+[debug][2017-08-09 17:05:15] end_game base[150] ratio[24],[586995][1185][1186]
+[debug][2017-08-09 17:05:23] player[586995] login success on game.cc
+[debug][2017-08-09 17:05:27] #########join robot[0][2]########
+[debug][2017-08-09 17:05:36] player[1188] login success on game.cc
+[debug][2017-08-09 17:05:37] player[1187] login success on game.cc
+[debug][2017-08-09 17:05:45] tid[2] start game[586995][1188][1187]
+[debug][2017-08-09 17:07:48] fwin_landlord M[1188][20760][14400] P [0]
+[debug][2017-08-09 17:07:48] fwin_farmer0 M[1187][97924][6480] P [0]
+[debug][2017-08-09 17:07:48] fwin_farmer1 M[586995][367707][6480] P [0]
+[debug][2017-08-09 17:07:48] end_game base[150] ratio[48],[1188][1187][586995]
+[debug][2017-08-09 17:07:55] player[586995] login success on game.cc
+[debug][2017-08-09 17:07:59] #########join robot[0][2]########
+[debug][2017-08-09 17:08:06] player[1190] login success on game.cc
+[debug][2017-08-09 17:08:10] player[1189] login success on game.cc
+[debug][2017-08-09 17:08:19] tid[1] start game[586995][1190][1189]
+[debug][2017-08-09 17:10:27] fwin_landlord M[586995][364107][3600] P [0]
+[debug][2017-08-09 17:10:27] fwin_farmer0 M[1189][33612][1620] P [0]
+[debug][2017-08-09 17:10:27] fwin_farmer1 M[1190][53146][1620] P [0]
+[debug][2017-08-09 17:10:27] end_game base[150] ratio[12],[586995][1189][1190]
+[debug][2017-08-09 17:10:34] player[586995] login success on game.cc
+[debug][2017-08-09 17:10:38] #########join robot[0][2]########
+[debug][2017-08-09 17:10:46] player[1192] login success on game.cc
+[debug][2017-08-09 17:10:47] player[1191] login success on game.cc
+[debug][2017-08-09 17:10:51] tid[2] start game[586995][1192][1191]
+[debug][2017-08-09 17:12:48] fwin_landlord M[1191][28880][7200] P [0]
+[debug][2017-08-09 17:12:48] fwin_farmer0 M[1192][481485][3240] P [0]
+[debug][2017-08-09 17:12:48] fwin_farmer1 M[586995][367347][3240] P [0]
+[debug][2017-08-09 17:12:48] end_game base[150] ratio[24],[1191][1192][586995]
+[debug][2017-08-09 17:12:55] player[586995] login success on game.cc
+[debug][2017-08-09 17:12:59] #########join robot[0][2]########
+[debug][2017-08-09 17:13:11] player[1193] login success on game.cc
+[debug][2017-08-09 17:13:11] player[1194] login success on game.cc
+[debug][2017-08-09 17:13:21] tid[1] start game[586995][1193][1194]
+[debug][2017-08-09 17:14:18] fwin_landlord M[1193][1][21516] P [0]
+[debug][2017-08-09 17:14:18] fwin_farmer0 M[1194][49692][9682] P [0]
+[debug][2017-08-09 17:14:18] fwin_farmer1 M[586995][377029][9682] P [0]
+[debug][2017-08-09 17:14:18] end_game base[150] ratio[96],[1193][1194][586995]
+[debug][2017-08-09 17:14:18] tid[1]broke_free_give[1193][1999].
+[debug][2017-08-09 17:14:25] player[586995] login success on game.cc
+[debug][2017-08-09 17:14:29] #########join robot[0][2]########
+[debug][2017-08-09 17:14:37] player[1196] login success on game.cc
+[debug][2017-08-09 17:14:39] player[1195] login success on game.cc
+[debug][2017-08-09 17:14:47] tid[2] start game[586995][1196][1195]
+[debug][2017-08-09 17:16:33] lwin_landlord M[586995] [402949] [25920] P [0]
+[debug][2017-08-09 17:16:33] lwin_farmer M[1195] [24348] [14400] P [0]
+[debug][2017-08-09 17:16:33] lwin_farmer M[1196] [38943] [14400] P [0]
+[debug][2017-08-09 17:16:33] end_game base[150] ratio[96],[586995][1195][1196]
+[debug][2017-08-09 17:16:41] player[586995] login success on game.cc
+[debug][2017-08-10 09:43:53] player[586995] login success on game.cc
+[debug][2017-08-10 09:43:57] #########join robot[0][2]########
+[debug][2017-08-10 09:44:03] player[1198] login success on game.cc
+[debug][2017-08-10 09:44:06] player[1197] login success on game.cc
+[debug][2017-08-10 09:44:15] tid[1] start game[586995][1198][1197]
+[debug][2017-08-10 09:45:25] fwin_landlord M[1198][9205][14400] P [0]
+[debug][2017-08-10 09:45:25] fwin_farmer0 M[1197][38198][6480] P [0]
+[debug][2017-08-10 09:45:25] fwin_farmer1 M[586995][409429][6480] P [0]
+[debug][2017-08-10 09:45:25] end_game base[150] ratio[48],[1198][1197][586995]
+[debug][2017-08-10 09:45:25] ##lastUp_day_time[1502329525]
+[debug][2017-08-10 09:48:53] player[586995] login success on game.cc
+[debug][2017-08-10 09:48:53] connection close in read header[11]
+[debug][2017-08-10 09:48:57] #########join robot[0][2]########
+[debug][2017-08-10 09:49:08] player[1199] login success on game.cc
+[debug][2017-08-10 09:49:08] player[1200] login success on game.cc
+[debug][2017-08-10 09:49:13] tid[1] start game[586995][1199][1200]
+[debug][2017-08-10 09:50:51] fwin_landlord M[1200][63005][14400] P [0]
+[debug][2017-08-10 09:50:51] fwin_farmer0 M[1199][69541][6480] P [0]
+[debug][2017-08-10 09:50:51] fwin_farmer1 M[586995][415909][6480] P [0]
+[debug][2017-08-10 09:50:51] end_game base[150] ratio[48],[1200][1199][586995]
+[debug][2017-08-10 09:50:58] player[586995] login success on game.cc
+[debug][2017-08-10 09:51:02] #########join robot[0][2]########
+[debug][2017-08-10 09:51:07] player[1000] login success on game.cc
+[debug][2017-08-10 09:51:12] player[1001] login success on game.cc
+[debug][2017-08-10 09:51:20] tid[2] start game[586995][1000][1001]
+[debug][2017-08-10 09:53:02] fwin_landlord M[586995][412309][3600] P [0]
+[debug][2017-08-10 09:53:02] fwin_farmer0 M[1000][38459][1620] P [0]
+[debug][2017-08-10 09:53:02] fwin_farmer1 M[1001][66970][1620] P [0]
+[debug][2017-08-10 09:53:02] end_game base[150] ratio[12],[586995][1000][1001]
+[debug][2017-08-10 09:53:09] player[586995] login success on game.cc
+[debug][2017-08-10 09:53:13] #########join robot[0][2]########
+[debug][2017-08-10 09:53:22] player[1003] login success on game.cc
+[debug][2017-08-10 09:53:23] player[1002] login success on game.cc
+[debug][2017-08-10 09:53:33] tid[1] start game[586995][1003][1002]
+[debug][2017-08-10 09:54:44] fwin_landlord M[586995][354709][57600] P [0]
+[debug][2017-08-10 09:54:44] fwin_farmer0 M[1002][110613][25920] P [0]
+[debug][2017-08-10 09:54:44] fwin_farmer1 M[1003][95764][25920] P [0]
+[debug][2017-08-10 09:54:44] end_game base[150] ratio[192],[586995][1002][1003]
+[debug][2017-08-10 09:54:52] player[586995] login success on game.cc
+[debug][2017-08-10 09:54:56] #########join robot[0][2]########
+[debug][2017-08-10 09:55:02] player[1005] login success on game.cc
+[debug][2017-08-10 09:55:05] player[1004] login success on game.cc
+[debug][2017-08-10 09:55:12] tid[2] start game[586995][1005][1004]
+[debug][2017-08-10 09:56:43] fwin_landlord M[1004][69670][14400] P [0]
+[debug][2017-08-10 09:56:43] fwin_farmer0 M[1005][91271][6480] P [0]
+[debug][2017-08-10 09:56:43] fwin_farmer1 M[586995][361189][6480] P [0]
+[debug][2017-08-10 09:56:43] end_game base[150] ratio[48],[1004][1005][586995]
+[debug][2017-08-10 09:56:50] player[586995] login success on game.cc
+[debug][2017-08-10 09:56:54] #########join robot[0][2]########
+[debug][2017-08-10 09:57:04] player[1007] login success on game.cc
+[debug][2017-08-10 09:57:06] player[1006] login success on game.cc
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:56] unknow err in read body[11]
+[error][2017-08-10 14:30:56] fd[4] recieve an error len package
+[error][2017-08-10 14:31:01] unknow err in read body[11]
+[error][2017-08-10 14:31:06] unknow err in read body[11]
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:07] fd[4] recieve an error len package
+[error][2017-08-10 14:31:07] fd[4] recieve an error len package
+[error][2017-08-10 14:31:07] fd[4] recieve an error len package
+[error][2017-08-10 14:31:07] fd[4] recieve an error len package
+[error][2017-08-10 14:31:07] fd[4] recieve an error len package
+[error][2017-08-10 14:31:12] unknow err in read body[11]
+[error][2017-08-10 14:31:12] fd[4] recieve an error len package
+[error][2017-08-10 14:31:12] fd[4] recieve an error len package
+[error][2017-08-10 14:31:12] fd[4] recieve an error len package
+[error][2017-08-10 14:31:12] fd[4] recieve an error len package
+[error][2017-08-10 14:31:12] fd[4] recieve an error len package
+[error][2017-08-10 14:31:37] fd[4] recieve an error len package
+[debug][2017-08-10 14:31:47] connection close in read header[11]
+[error][2017-08-10 14:31:47] fd[4] recieve an error len package
+[error][2017-08-10 14:31:47] fd[4] recieve an error len package
+[error][2017-08-10 14:31:53] fd[4] recieve an error len package
+[error][2017-08-16 13:58:06] fd[4] recieve an error len package
+[error][2017-08-24 11:45:12] fd[4] recieve an error len package
+[error][2017-08-24 12:49:21] fd[4] recieve an error len package
+[error][2017-08-24 13:54:41] fd[4] recieve an error len package
+[debug][2017-09-04 15:13:34] player[587013] login success on game.cc
+[debug][2017-09-04 15:13:38] #########join robot[0][2]########
+[debug][2017-09-04 15:13:45] player[1192] login success on game.cc
+[debug][2017-09-04 15:13:46] player[1193] login success on game.cc
+[error][2017-09-09 17:26:56] unknow err in read header[11]
+[error][2017-09-09 17:27:04] unknow err in read body[11]
+[error][2017-09-09 17:27:13] unknow err in read body[11]
+[error][2017-09-09 17:27:13] fd[4] recieve an error len package
+[error][2017-09-09 17:27:13] fd[4] recieve an error len package
+[error][2017-09-09 17:27:14] fd[4] recieve an error len package
+[error][2017-09-09 17:27:14] fd[4] recieve an error len package
+[error][2017-09-09 17:27:15] fd[4] recieve an error len package
+[error][2017-09-09 17:27:15] fd[4] recieve an error len package
+[error][2017-09-09 17:27:16] fd[4] recieve an error len package
+[error][2017-09-09 17:27:16] fd[4] recieve an error len package
+[error][2017-09-09 17:27:16] fd[4] recieve an error len package
+[error][2017-09-09 17:27:17] fd[4] recieve an error len package
+[error][2017-09-09 17:27:17] fd[4] recieve an error len package
+[error][2017-09-09 17:27:18] fd[4] recieve an error len package
+[error][2017-09-09 17:27:18] fd[4] recieve an error len package
+[error][2017-09-09 17:27:19] fd[4] recieve an error len package
+[error][2017-09-09 17:27:27] unknow err in read body[11]
+[error][2017-09-09 17:27:27] fd[4] recieve an error len package
+[error][2017-09-09 17:27:28] fd[4] recieve an error len package
+[error][2017-09-09 17:27:28] fd[4] recieve an error len package
+[error][2017-09-09 17:27:29] fd[4] recieve an error len package
+[error][2017-09-09 17:27:29] fd[4] recieve an error len package
+[error][2017-09-09 17:27:30] fd[4] recieve an error len package
+[error][2017-09-09 17:27:30] fd[4] recieve an error len package
+[error][2017-09-09 17:27:39] unknow err in read body[11]
+[error][2017-09-09 17:27:39] fd[4] recieve an error len package
+[error][2017-09-09 17:27:40] fd[4] recieve an error len package
+[error][2017-09-09 17:27:40] fd[4] recieve an error len package
+[debug][2017-09-13 10:06:46] player[586990] login success on game.cc
+[debug][2017-09-13 10:06:50] #########join robot[0][2]########
+[debug][2017-09-13 10:06:54] player[1004] login success on game.cc
+[debug][2017-09-13 10:06:56] player[1003] login success on game.cc
+[debug][2017-09-13 10:07:06] tid[1] start game[586990][1004][1003]
+[debug][2017-09-13 10:08:45] lwin_landlord M[1003] [97384] [1620] P [0]
+[debug][2017-09-13 10:08:45] lwin_farmer M[1004] [70930] [900] P [0]
+[debug][2017-09-13 10:08:45] lwin_farmer M[586990] [102338] [900] P [0]
+[debug][2017-09-13 10:08:45] end_game base[150] ratio[6],[1003][1004][586990]
+[debug][2017-09-13 10:08:45] ##lastUp_day_time[1505268525]
+[debug][2017-09-13 10:08:50] player[586990] login success on game.cc
+[debug][2017-09-13 10:08:54] #########join robot[0][2]########
+[debug][2017-09-13 10:09:02] player[1005] login success on game.cc
+[debug][2017-09-13 10:09:04] player[1006] login success on game.cc
+[debug][2017-09-13 10:09:13] tid[2] start game[586990][1005][1006]
+[debug][2017-09-13 10:10:20] fwin_landlord M[1005][32471][57600] P [0]
+[debug][2017-09-13 10:10:20] fwin_farmer0 M[1006][108494][25920] P [0]
+[debug][2017-09-13 10:10:20] fwin_farmer1 M[586990][128258][25920] P [0]
+[debug][2017-09-13 10:10:20] end_game base[150] ratio[192],[1005][1006][586990]
+[debug][2017-09-13 10:10:27] player[586990] login success on game.cc
+[debug][2017-09-13 10:10:31] #########join robot[0][2]########
+[debug][2017-09-13 10:10:38] player[1008] login success on game.cc
+[debug][2017-09-13 10:10:41] player[1007] login success on game.cc
+[debug][2017-09-13 10:10:48] tid[1] start game[586990][1008][1007]
+[debug][2017-09-13 10:12:24] fwin_landlord M[1007][70750][14400] P [0]
+[debug][2017-09-13 10:12:24] fwin_farmer0 M[1008][81481][6480] P [0]
+[debug][2017-09-13 10:12:24] fwin_farmer1 M[586990][134738][6480] P [0]
+[debug][2017-09-13 10:12:24] end_game base[150] ratio[48],[1007][1008][586990]
+[debug][2017-09-13 10:12:31] player[586990] login success on game.cc
+[error][2017-09-13 10:12:31] unknow err in read header[11]
+[debug][2017-09-13 10:12:32] player[586990] rebind by offline get info ok
+[debug][2017-09-13 10:12:32] handler_rebind: state[0] ready_players[0]
+[debug][2017-09-13 10:12:32] handler_rebind READY: 0
+[debug][2017-09-13 10:12:35] #########join robot[0][2]########
+[debug][2017-09-13 10:12:39] player[1009] login success on game.cc
+[debug][2017-09-13 10:12:41] player[1010] login success on game.cc
+[debug][2017-09-13 10:12:48] tid[2] start game[586990][1009][1010]
+[debug][2017-09-13 10:14:17] fwin_landlord M[1010][1][32880] P [0]
+[debug][2017-09-13 10:14:17] fwin_farmer0 M[1009][190750][14796] P [0]
+[debug][2017-09-13 10:14:17] fwin_farmer1 M[586990][149534][14796] P [0]
+[debug][2017-09-13 10:14:17] end_game base[150] ratio[768],[1010][1009][586990]
+[debug][2017-09-13 10:14:17] tid[2]broke_free_give[1010][1999].
+[debug][2017-09-13 10:14:24] player[586990] login success on game.cc
+[debug][2017-09-15 09:00:07] player[586990] login success on game.cc
+[debug][2017-09-15 09:00:11] #########join robot[0][2]########
+[debug][2017-09-15 09:00:20] player[1054] login success on game.cc
+[debug][2017-09-15 09:00:22] player[1053] login success on game.cc
+[debug][2017-09-15 09:00:28] tid[1] start game[586990][1054][1053]
+[debug][2017-09-15 09:02:24] lwin_landlord M[586990] [162494] [12960] P [0]
+[debug][2017-09-15 09:02:24] lwin_farmer M[1053] [40111] [7200] P [0]
+[debug][2017-09-15 09:02:24] lwin_farmer M[1054] [77922] [7200] P [0]
+[debug][2017-09-15 09:02:24] end_game base[150] ratio[48],[586990][1053][1054]
+[debug][2017-09-15 09:02:24] ##lastUp_day_time[1505437344]
+[debug][2017-09-15 09:02:30] player[586990] login success on game.cc
+[debug][2017-09-15 09:02:34] #########join robot[0][2]########
+[debug][2017-09-15 09:02:43] player[1055] login success on game.cc
+[debug][2017-09-15 09:02:46] player[1056] login success on game.cc
+[debug][2017-09-15 09:02:50] tid[2] start game[586990][1055][1056]
+[debug][2017-09-15 09:04:38] lwin_landlord M[586990] [266174] [103680] P [0]
+[debug][2017-09-15 09:04:38] lwin_farmer M[1055] [14988] [57600] P [0]
+[debug][2017-09-15 09:04:38] lwin_farmer M[1056] [3147] [57600] P [0]
+[debug][2017-09-15 09:04:38] end_game base[150] ratio[384],[586990][1055][1056]
+[debug][2017-09-15 09:04:45] player[586990] login success on game.cc
+[debug][2017-09-15 09:04:47] uid[1055] money[14988] min_money[20000] money too less.
+[debug][2017-09-15 09:04:49] #########join robot[0][2]########
+[debug][2017-09-15 09:04:56] player[1057] login success on game.cc
+[debug][2017-09-15 09:04:57] player[1058] login success on game.cc
+[debug][2017-09-15 09:05:02] tid[1] start game[586990][1057][1058]
+[debug][2017-09-15 09:06:40] fwin_landlord M[586990][168164][98010] P [0]
+[debug][2017-09-15 09:06:40] fwin_farmer0 M[1057][118327][51840] P [0]
+[debug][2017-09-15 09:06:40] fwin_farmer1 M[1058][76779][36369] P [0]
+[debug][2017-09-15 09:06:40] end_game base[150] ratio[384],[586990][1057][1058]
+[debug][2017-09-15 09:06:46] player[586990] login success on game.cc
+[debug][2017-09-15 09:06:50] #########join robot[0][2]########
+[debug][2017-09-15 09:06:59] player[1059] login success on game.cc
+[debug][2017-09-15 09:06:59] player[1060] login success on game.cc
+[debug][2017-09-15 09:07:07] tid[2] start game[586990][1059][1060]
+[debug][2017-09-15 09:07:38] fwin_landlord M[1059][267636][900] P [0]
+[debug][2017-09-15 09:07:38] fwin_farmer0 M[1060][28641][405] P [0]
+[debug][2017-09-15 09:07:38] fwin_farmer1 M[586990][168569][405] P [0]
+[debug][2017-09-15 09:07:38] end_game base[150] ratio[3],[1059][1060][586990]
+[debug][2017-09-15 09:07:44] player[586990] login success on game.cc
+[debug][2017-09-15 09:07:48] #########join robot[0][2]########
+[debug][2017-09-15 09:07:57] player[1062] login success on game.cc
+[debug][2017-09-15 09:07:59] player[1061] login success on game.cc
+[debug][2017-09-15 09:08:05] tid[1] start game[586990][1062][1061]
+[debug][2017-09-15 09:09:42] fwin_landlord M[1061][388259][7200] P [0]
+[debug][2017-09-15 09:09:42] fwin_farmer0 M[1062][70892][3240] P [0]
+[debug][2017-09-15 09:09:42] fwin_farmer1 M[586990][171809][3240] P [0]
+[debug][2017-09-15 09:09:42] end_game base[150] ratio[24],[1061][1062][586990]
+[debug][2017-09-15 09:09:49] player[586990] login success on game.cc
+[debug][2017-09-15 09:09:53] #########join robot[0][2]########
+[debug][2017-09-15 09:09:59] player[1063] login success on game.cc
+[debug][2017-09-15 09:09:59] player[1064] login success on game.cc
+[debug][2017-09-15 09:10:07] tid[2] start game[586990][1063][1064]
+[debug][2017-09-15 09:11:43] fwin_landlord M[1063][32413][7200] P [0]
+[debug][2017-09-15 09:11:43] fwin_farmer0 M[1064][60640][3240] P [0]
+[debug][2017-09-15 09:11:43] fwin_farmer1 M[586990][175049][3240] P [0]
+[debug][2017-09-15 09:11:43] end_game base[150] ratio[24],[1063][1064][586990]
+[debug][2017-09-15 09:11:48] player[586990] login success on game.cc
+[debug][2017-09-15 09:11:52] #########join robot[0][2]########
+[debug][2017-09-15 09:12:00] player[1065] login success on game.cc
+[debug][2017-09-15 09:12:00] player[1066] login success on game.cc
+[debug][2017-09-15 09:12:08] tid[1] start game[586990][1065][1066]
+[debug][2017-09-15 09:13:46] fwin_landlord M[1065][82240][1800] P [0]
+[debug][2017-09-15 09:13:46] fwin_farmer0 M[1066][39974][810] P [0]
+[debug][2017-09-15 09:13:46] fwin_farmer1 M[586990][175859][810] P [0]
+[debug][2017-09-15 09:13:46] end_game base[150] ratio[6],[1065][1066][586990]
+[debug][2017-09-15 09:13:53] player[586990] login success on game.cc
+[debug][2017-09-15 09:13:57] #########join robot[0][2]########
+[debug][2017-09-15 09:14:01] player[1068] login success on game.cc
+[debug][2017-09-15 09:14:07] player[1067] login success on game.cc
+[debug][2017-09-15 09:14:10] tid[2] start game[586990][1068][1067]
+[debug][2017-09-15 09:15:53] fwin_landlord M[1067][38728][7200] P [0]
+[debug][2017-09-15 09:15:53] fwin_farmer0 M[1068][44548][3240] P [0]
+[debug][2017-09-15 09:15:53] fwin_farmer1 M[586990][179099][3240] P [0]
+[debug][2017-09-15 09:15:53] end_game base[150] ratio[24],[1067][1068][586990]
+[debug][2017-09-15 09:16:01] player[586990] login success on game.cc
+[debug][2017-09-15 09:16:05] #########join robot[0][2]########
+[debug][2017-09-15 09:16:11] player[1069] login success on game.cc
+[debug][2017-09-15 09:16:13] player[1070] login success on game.cc
+[debug][2017-09-15 09:16:20] tid[1] start game[586990][1069][1070]
+[debug][2017-09-15 09:17:28] fwin_landlord M[1070][196349][900] P [0]
+[debug][2017-09-15 09:17:28] fwin_farmer0 M[1069][26997][405] P [0]
+[debug][2017-09-15 09:17:28] fwin_farmer1 M[586990][179504][405] P [0]
+[debug][2017-09-15 09:17:28] end_game base[150] ratio[3],[1070][1069][586990]
+[debug][2017-09-15 09:17:36] player[586990] login success on game.cc
+[debug][2017-09-15 09:17:40] #########join robot[0][2]########
+[debug][2017-09-15 09:17:50] player[1072] login success on game.cc
+[debug][2017-09-15 09:17:51] player[1071] login success on game.cc
+[debug][2017-09-15 09:18:01] tid[2] start game[586990][1072][1071]
+[debug][2017-09-15 09:19:31] lwin_landlord M[586990] [185984] [6480] P [0]
+[debug][2017-09-15 09:19:31] lwin_farmer M[1071] [494050] [3600] P [0]
+[debug][2017-09-15 09:19:31] lwin_farmer M[1072] [153017] [3600] P [0]
+[debug][2017-09-15 09:19:31] end_game base[150] ratio[24],[586990][1071][1072]
+[debug][2017-09-15 09:19:38] player[586990] login success on game.cc
+[debug][2017-09-15 09:19:42] #########join robot[0][2]########
+[debug][2017-09-15 09:19:52] player[1074] login success on game.cc
+[debug][2017-09-15 09:19:53] player[1073] login success on game.cc
+[debug][2017-09-15 09:20:02] tid[1] start game[586990][1074][1073]
+[debug][2017-09-15 09:21:32] lwin_landlord M[586990] [187604] [1620] P [0]
+[debug][2017-09-15 09:21:32] lwin_farmer M[1073] [98021] [900] P [0]
+[debug][2017-09-15 09:21:32] lwin_farmer M[1074] [275058] [900] P [0]
+[debug][2017-09-15 09:21:32] end_game base[150] ratio[6],[586990][1073][1074]
+[debug][2017-09-15 09:21:39] player[586990] login success on game.cc
+[debug][2017-09-15 09:21:43] #########join robot[0][2]########
+[debug][2017-09-15 09:21:48] player[1076] login success on game.cc
+[debug][2017-09-15 09:21:49] player[1075] login success on game.cc
+[debug][2017-09-15 09:21:54] tid[2] start game[586990][1076][1075]
+[debug][2017-09-15 09:23:22] fwin_landlord M[1076][1][39884] P [0]
+[debug][2017-09-15 09:23:22] fwin_farmer0 M[1075][140084][17947] P [0]
+[debug][2017-09-15 09:23:22] fwin_farmer1 M[586990][205551][17947] P [0]
+[debug][2017-09-15 09:23:22] end_game base[150] ratio[192],[1076][1075][586990]
+[debug][2017-09-15 09:23:22] tid[2]broke_free_give[1076][1999].
+[debug][2017-09-15 09:23:28] player[586990] login success on game.cc
+[debug][2017-09-15 09:23:32] #########join robot[0][2]########
+[debug][2017-09-15 09:23:39] player[1077] login success on game.cc
+[debug][2017-09-15 09:23:43] player[1078] login success on game.cc
+[debug][2017-09-15 09:23:49] tid[1] start game[586990][1077][1078]
+[debug][2017-09-15 09:25:11] fwin_landlord M[1077][20260][7200] P [0]
+[debug][2017-09-15 09:25:11] fwin_farmer0 M[1078][98024][3240] P [0]
+[debug][2017-09-15 09:25:11] fwin_farmer1 M[586990][208791][3240] P [0]
+[debug][2017-09-15 09:25:11] end_game base[150] ratio[24],[1077][1078][586990]
+[debug][2017-09-15 09:25:19] player[586990] login success on game.cc
+[debug][2017-09-15 09:25:23] #########join robot[0][2]########
+[debug][2017-09-15 09:25:32] player[1079] login success on game.cc
+[debug][2017-09-15 09:25:32] player[1080] login success on game.cc
+[debug][2017-09-15 09:25:38] tid[2] start game[586990][1079][1080]
+[debug][2017-09-15 09:27:00] fwin_landlord M[1080][15386][7200] P [0]
+[debug][2017-09-15 09:27:00] fwin_farmer0 M[1079][90472][3240] P [0]
+[debug][2017-09-15 09:27:00] fwin_farmer1 M[586990][212031][3240] P [0]
+[debug][2017-09-15 09:27:00] end_game base[150] ratio[24],[1080][1079][586990]
+[debug][2017-09-15 09:27:07] player[586990] login success on game.cc
+[debug][2017-09-15 09:27:09] uid[1080] money[15386] min_money[20000] money too less.
+[debug][2017-09-15 09:27:11] #########join robot[0][2]########
+[debug][2017-09-15 09:27:16] player[1081] login success on game.cc
+[debug][2017-09-15 09:27:22] player[1082] login success on game.cc
+[debug][2017-09-15 09:27:32] tid[1] start game[586990][1081][1082]
+[debug][2017-09-15 09:29:41] fwin_landlord M[1081][225175][7200] P [0]
+[debug][2017-09-15 09:29:41] fwin_farmer0 M[1082][41913][3240] P [0]
+[debug][2017-09-15 09:29:41] fwin_farmer1 M[586990][215271][3240] P [0]
+[debug][2017-09-15 09:29:41] end_game base[150] ratio[24],[1081][1082][586990]
+[debug][2017-09-15 09:29:48] player[586990] login success on game.cc
+[debug][2017-09-15 09:30:41] player[586990] login success on game.cc
+[debug][2017-09-15 09:30:45] #########join robot[0][2]########
+[debug][2017-09-15 09:30:49] player[1083] login success on game.cc
+[debug][2017-09-15 09:30:54] player[1084] login success on game.cc
+[debug][2017-09-15 09:31:04] tid[1] start game[586990][1083][1084]
+[debug][2017-09-15 09:32:34] fwin_landlord M[1083][83174][3600] P [0]
+[debug][2017-09-15 09:32:34] fwin_farmer0 M[1084][65098][1620] P [0]
+[debug][2017-09-15 09:32:34] fwin_farmer1 M[586990][216891][1620] P [0]
+[debug][2017-09-15 09:32:34] end_game base[150] ratio[12],[1083][1084][586990]
+[debug][2017-09-15 09:32:42] player[586990] login success on game.cc
+[debug][2017-09-15 09:32:46] #########join robot[0][2]########
+[debug][2017-09-15 09:32:52] player[1086] login success on game.cc
+[debug][2017-09-15 09:32:53] player[1085] login success on game.cc
+[debug][2017-09-15 09:33:01] tid[2] start game[586990][1086][1085]
+[debug][2017-09-15 09:34:26] fwin_landlord M[1086][45623][1800] P [0]
+[debug][2017-09-15 09:34:26] fwin_farmer0 M[1085][56715][810] P [0]
+[debug][2017-09-15 09:34:26] fwin_farmer1 M[586990][217701][810] P [0]
+[debug][2017-09-15 09:34:26] end_game base[150] ratio[6],[1086][1085][586990]
+[debug][2017-09-15 09:34:32] player[586990] login success on game.cc
+[debug][2017-09-15 09:34:36] #########join robot[0][2]########
+[debug][2017-09-15 09:34:40] player[1087] login success on game.cc
+[debug][2017-09-15 09:34:46] player[1088] login success on game.cc
+[debug][2017-09-15 09:34:51] tid[1] start game[586990][1087][1088]
+[debug][2017-09-15 09:36:45] fwin_landlord M[1088][0][24232] P [0]
+[debug][2017-09-15 09:36:45] fwin_farmer0 M[1087][79222][10904] P [0]
+[debug][2017-09-15 09:36:45] fwin_farmer1 M[586990][228605][10904] P [0]
+[debug][2017-09-15 09:36:45] end_game base[150] ratio[192],[1088][1087][586990]
+[debug][2017-09-15 09:36:45] tid[1]broke_free_give[1088][2000].
+[debug][2017-09-15 09:36:52] player[586990] login success on game.cc
+[debug][2017-09-15 09:36:56] #########join robot[0][2]########
+[debug][2017-09-15 09:37:03] player[1089] login success on game.cc
+[debug][2017-09-15 09:37:03] player[1090] login success on game.cc
+[debug][2017-09-15 10:16:40] player[586990] login success on game.cc
+[debug][2017-09-15 10:16:44] #########join robot[0][2]########
+[debug][2017-09-15 10:16:51] player[1091] login success on game.cc
+[debug][2017-09-15 10:16:56] player[1092] login success on game.cc
+[debug][2017-09-15 10:17:01] tid[1] start game[586990][1091][1092]
+[debug][2017-09-15 10:18:20] fwin_landlord M[1091][0][45414] P [0]
+[debug][2017-09-15 10:18:20] fwin_farmer0 M[1092][390041][20436] P [0]
+[debug][2017-09-15 10:18:20] fwin_farmer1 M[586990][249041][20436] P [0]
+[debug][2017-09-15 10:18:20] end_game base[150] ratio[384],[1091][1092][586990]
+[debug][2017-09-15 10:18:20] tid[1]broke_free_give[1091][2000].
+[debug][2017-09-15 10:18:27] player[586990] login success on game.cc
+[debug][2017-09-15 10:18:31] #########join robot[0][2]########
+[debug][2017-09-15 10:18:40] player[1093] login success on game.cc
+[debug][2017-09-15 10:18:42] player[1094] login success on game.cc
+[debug][2017-09-15 10:18:47] tid[2] start game[586990][1093][1094]
+[debug][2017-09-15 10:19:56] fwin_landlord M[1094][470991][14400] P [0]
+[debug][2017-09-15 10:19:56] fwin_farmer0 M[1093][41624][6480] P [0]
+[debug][2017-09-15 10:19:56] fwin_farmer1 M[586990][255521][6480] P [0]
+[debug][2017-09-15 10:19:56] end_game base[150] ratio[48],[1094][1093][586990]
+[debug][2017-09-15 10:20:03] player[586990] login success on game.cc
+[debug][2017-09-15 10:20:07] #########join robot[0][2]########
+[debug][2017-09-15 10:20:11] player[1095] login success on game.cc
+[debug][2017-09-15 10:20:11] player[1096] login success on game.cc
+[debug][2017-09-15 10:20:17] tid[1] start game[586990][1095][1096]
+[debug][2017-09-15 10:21:48] lwin_landlord M[586990] [257141] [1620] P [0]
+[debug][2017-09-15 10:21:48] lwin_farmer M[1095] [457212] [900] P [0]
+[debug][2017-09-15 10:21:48] lwin_farmer M[1096] [262044] [900] P [0]
+[debug][2017-09-15 10:21:48] end_game base[150] ratio[6],[586990][1095][1096]
+[debug][2017-09-15 10:21:54] player[586990] login success on game.cc
+[debug][2017-09-15 10:21:58] #########join robot[0][2]########
+[debug][2017-09-15 10:22:04] player[1098] login success on game.cc
+[debug][2017-09-15 10:22:05] player[1097] login success on game.cc
+[debug][2017-09-15 10:22:14] tid[2] start game[586990][1098][1097]
+[debug][2017-09-15 10:23:26] lwin_landlord M[586990] [257951] [810] P [0]
+[debug][2017-09-15 10:23:26] lwin_farmer M[1097] [47558] [450] P [0]
+[debug][2017-09-15 10:23:26] lwin_farmer M[1098] [38174] [450] P [0]
+[debug][2017-09-15 10:23:26] end_game base[150] ratio[3],[586990][1097][1098]
+[debug][2017-09-15 10:23:34] player[586990] login success on game.cc
+[error][2017-09-15 10:23:34] unknow err in read header[11]
+[debug][2017-09-15 10:23:34] player[586990] rebind by offline get info ok
+[debug][2017-09-15 10:23:34] handler_rebind: state[0] ready_players[0]
+[debug][2017-09-15 10:23:34] handler_rebind READY: 0
+[debug][2017-09-15 10:23:38] #########join robot[0][2]########
+[debug][2017-09-15 10:23:43] player[1100] login success on game.cc
+[debug][2017-09-15 10:23:45] player[1099] login success on game.cc
+[debug][2017-09-15 10:23:49] tid[1] start game[586990][1100][1099]
+[debug][2017-09-15 10:25:08] fwin_landlord M[586990][250751][7200] P [0]
+[debug][2017-09-15 10:25:08] fwin_farmer0 M[1099][39015][3240] P [0]
+[debug][2017-09-15 10:25:08] fwin_farmer1 M[1100][38953][3240] P [0]
+[debug][2017-09-15 10:25:08] end_game base[150] ratio[24],[586990][1099][1100]
+[debug][2017-09-15 10:25:15] player[586990] login success on game.cc
+[debug][2017-09-15 10:25:19] #########join robot[0][2]########
+[debug][2017-09-15 10:25:25] player[1101] login success on game.cc
+[debug][2017-09-15 10:25:25] player[1102] login success on game.cc
+[debug][2017-09-15 10:25:31] tid[2] start game[586990][1101][1102]
+[debug][2017-09-15 10:27:03] lwin_landlord M[1102] [43436] [3240] P [0]
+[debug][2017-09-15 10:27:03] lwin_farmer M[1101] [83231] [1800] P [0]
+[debug][2017-09-15 10:27:03] lwin_farmer M[586990] [248951] [1800] P [0]
+[debug][2017-09-15 10:27:03] end_game base[150] ratio[12],[1102][1101][586990]
+[debug][2017-09-15 10:27:11] player[586990] login success on game.cc
+[debug][2017-09-15 10:27:15] #########join robot[0][2]########
+[debug][2017-09-15 10:27:23] player[1104] login success on game.cc
+[debug][2017-09-15 10:27:24] player[1103] login success on game.cc
+[debug][2017-09-15 10:27:27] player[586990] login success on game.cc
+[debug][2017-09-15 10:27:41] tid[1] start game[1104][1103][586990]
+[debug][2017-09-15 10:29:02] fwin_landlord M[1103][85834][1800] P [0]
+[debug][2017-09-15 10:29:02] fwin_farmer0 M[1104][21255][810] P [0]
+[debug][2017-09-15 10:29:02] fwin_farmer1 M[586990][249761][810] P [0]
+[debug][2017-09-15 10:29:02] end_game base[150] ratio[6],[1103][1104][586990]
+[debug][2017-09-15 10:29:09] player[586990] login success on game.cc
+[debug][2017-09-15 10:29:13] #########join robot[0][2]########
+[debug][2017-09-15 10:29:22] player[1105] login success on game.cc
+[debug][2017-09-15 10:29:22] player[1106] login success on game.cc
+[debug][2017-09-15 10:29:30] tid[2] start game[586990][1105][1106]
+[debug][2017-09-15 10:30:37] fwin_landlord M[586990][199720][50041] P [0]
+[debug][2017-09-15 10:30:37] fwin_farmer0 M[1105][40357][19116] P [0]
+[debug][2017-09-15 10:30:37] fwin_farmer1 M[1106][87326][25920] P [0]
+[debug][2017-09-15 10:30:37] end_game base[150] ratio[192],[586990][1105][1106]
+[debug][2017-09-15 10:30:43] player[586990] login success on game.cc
+[debug][2017-09-15 10:30:47] #########join robot[0][2]########
+[debug][2017-09-15 10:30:52] player[1107] login success on game.cc
+[debug][2017-09-15 10:30:52] player[1108] login success on game.cc
+[debug][2017-09-15 10:31:01] tid[1] start game[586990][1107][1108]
+[debug][2017-09-15 10:32:41] lwin_landlord M[586990] [225640] [25920] P [0]
+[debug][2017-09-15 10:32:41] lwin_farmer M[1107] [13617] [14400] P [0]
+[debug][2017-09-15 10:32:41] lwin_farmer M[1108] [36233] [14400] P [0]
+[debug][2017-09-15 10:32:41] end_game base[150] ratio[96],[586990][1107][1108]
+[debug][2017-09-15 10:32:47] player[586990] login success on game.cc
+[debug][2017-09-15 10:32:51] #########join robot[0][2]########
+[debug][2017-09-15 10:33:00] player[1109] login success on game.cc
+[debug][2017-09-15 10:33:01] player[1110] login success on game.cc
+[debug][2017-09-15 10:33:06] tid[2] start game[586990][1109][1110]
+[debug][2017-09-15 10:34:39] fwin_landlord M[586990][222040][3600] P [0]
+[debug][2017-09-15 10:34:39] fwin_farmer0 M[1109][74577][1620] P [0]
+[debug][2017-09-15 10:34:39] fwin_farmer1 M[1110][117349][1620] P [0]
+[debug][2017-09-15 10:34:39] end_game base[150] ratio[12],[586990][1109][1110]
+[debug][2017-09-15 10:34:47] player[586990] login success on game.cc
+[debug][2017-09-15 10:34:51] #########join robot[0][2]########
+[debug][2017-09-15 10:34:57] player[1111] login success on game.cc
+[debug][2017-09-15 10:35:03] player[1112] login success on game.cc
+[debug][2017-09-15 10:35:07] tid[1] start game[586990][1111][1112]
+[debug][2017-09-15 10:36:20] fwin_landlord M[1111][18612][7200] P [0]
+[debug][2017-09-15 10:36:20] fwin_farmer0 M[1112][145170][3240] P [0]
+[debug][2017-09-15 10:36:20] fwin_farmer1 M[586990][225280][3240] P [0]
+[debug][2017-09-15 10:36:20] end_game base[150] ratio[24],[1111][1112][586990]
+[debug][2017-09-15 10:36:26] player[586990] login success on game.cc
+[debug][2017-09-15 10:36:30] #########join robot[0][2]########
+[debug][2017-09-15 10:36:36] player[1114] login success on game.cc
+[debug][2017-09-15 10:36:43] player[1113] login success on game.cc
+[debug][2017-09-15 10:36:48] tid[2] start game[586990][1114][1113]
+[debug][2017-09-15 10:38:17] fwin_landlord M[1114][85821][3600] P [0]
+[debug][2017-09-15 10:38:17] fwin_farmer0 M[1113][69250][1620] P [0]
+[debug][2017-09-15 10:38:17] fwin_farmer1 M[586990][226900][1620] P [0]
+[debug][2017-09-15 10:38:17] end_game base[150] ratio[12],[1114][1113][586990]
+[debug][2017-09-15 10:38:22] player[586990] login success on game.cc
+[debug][2017-09-15 10:38:26] #########join robot[0][2]########
+[debug][2017-09-15 10:38:35] player[1115] login success on game.cc
+[debug][2017-09-15 10:38:36] player[1116] login success on game.cc
+[debug][2017-09-15 10:38:46] tid[1] start game[586990][1115][1116]
+[debug][2017-09-15 10:40:08] fwin_landlord M[1115][42688][7200] P [0]
+[debug][2017-09-15 10:40:08] fwin_farmer0 M[1116][26373][3240] P [0]
+[debug][2017-09-15 10:40:08] fwin_farmer1 M[586990][230140][3240] P [0]
+[debug][2017-09-15 10:40:08] end_game base[150] ratio[24],[1115][1116][586990]
+[debug][2017-09-15 10:40:15] player[586990] login success on game.cc
+[debug][2017-09-15 10:40:19] #########join robot[0][2]########
+[debug][2017-09-15 10:40:25] player[1117] login success on game.cc
+[debug][2017-09-15 10:40:27] player[1118] login success on game.cc
+[debug][2017-09-15 10:40:37] tid[2] start game[586990][1117][1118]
+[debug][2017-09-15 10:42:10] fwin_landlord M[1117][0][75604] P [0]
+[debug][2017-09-15 10:42:10] fwin_farmer0 M[1118][103057][34021] P [0]
+[debug][2017-09-15 10:42:10] fwin_farmer1 M[586990][264161][34021] P [0]
+[debug][2017-09-15 10:42:10] end_game base[150] ratio[768],[1117][1118][586990]
+[debug][2017-09-15 10:42:10] tid[2]broke_free_give[1117][2000].
+[debug][2017-09-15 10:42:16] player[586990] login success on game.cc
+[debug][2017-09-15 12:06:02] player[586990] login success on game.cc
+[debug][2017-09-15 12:06:06] #########join robot[0][2]########
+[debug][2017-09-15 12:06:13] player[1120] login success on game.cc
+[debug][2017-09-15 12:06:14] player[1119] login success on game.cc
+[debug][2017-09-15 12:06:22] tid[1] start game[586990][1120][1119]
+[debug][2017-09-15 12:07:01] fwin_landlord M[1119][13817][7200] P [0]
+[debug][2017-09-15 12:07:01] fwin_farmer0 M[1120][53964][3240] P [0]
+[debug][2017-09-15 12:07:01] fwin_farmer1 M[586990][273901][3240] P [0]
+[debug][2017-09-15 12:07:01] end_game base[150] ratio[24],[1119][1120][586990]
+[debug][2017-09-15 12:07:09] player[586990] login success on game.cc
+[debug][2017-09-15 12:07:13] #########join robot[0][2]########
+[debug][2017-09-15 12:07:19] player[1121] login success on game.cc
+[debug][2017-09-15 12:07:21] player[1122] login success on game.cc
+[debug][2017-09-15 12:07:28] tid[2] start game[586990][1121][1122]
+[debug][2017-09-15 12:08:32] fwin_landlord M[1122][1][42406] P [0]
+[debug][2017-09-15 12:08:32] fwin_farmer0 M[1121][56516][19082] P [0]
+[debug][2017-09-15 12:08:32] fwin_farmer1 M[586990][292983][19082] P [0]
+[debug][2017-09-15 12:08:32] end_game base[150] ratio[192],[1122][1121][586990]
+[debug][2017-09-15 12:08:32] tid[2]broke_free_give[1122][1999].
+[debug][2017-09-15 12:08:39] player[586990] login success on game.cc
+[debug][2017-09-15 12:08:43] #########join robot[0][2]########
+[debug][2017-09-15 12:08:50] player[1123] login success on game.cc
+[debug][2017-09-15 12:08:53] player[1124] login success on game.cc
+[debug][2017-09-15 12:09:03] tid[1] start game[586990][1123][1124]
+[debug][2017-09-15 12:10:14] lwin_landlord M[1123] [51483] [810] P [0]
+[debug][2017-09-15 12:10:14] lwin_farmer M[1124] [74063] [450] P [0]
+[debug][2017-09-15 12:10:14] lwin_farmer M[586990] [292533] [450] P [0]
+[debug][2017-09-15 12:10:14] end_game base[150] ratio[3],[1123][1124][586990]
+[debug][2017-09-15 12:10:21] player[586990] login success on game.cc
+[debug][2017-09-15 12:10:25] #########join robot[0][2]########
+[debug][2017-09-15 12:10:30] player[1126] login success on game.cc
+[debug][2017-09-15 12:10:31] player[1125] login success on game.cc
+[debug][2017-09-15 12:10:34] tid[2] start game[586990][1126][1125]
+[debug][2017-09-15 12:11:58] lwin_landlord M[586990] [299013] [6480] P [0]
+[debug][2017-09-15 12:11:58] lwin_farmer M[1125] [58712] [3600] P [0]
+[debug][2017-09-15 12:11:58] lwin_farmer M[1126] [344714] [3600] P [0]
+[debug][2017-09-15 12:11:58] end_game base[150] ratio[24],[586990][1125][1126]
+[debug][2017-09-15 12:12:04] player[586990] login success on game.cc
+[debug][2017-09-15 12:12:08] #########join robot[0][2]########
+[debug][2017-09-15 12:12:16] player[1128] login success on game.cc
+[debug][2017-09-15 12:12:18] player[1127] login success on game.cc
+[debug][2017-09-15 12:12:26] tid[1] start game[586990][1128][1127]
+[debug][2017-09-15 12:13:51] fwin_landlord M[1127][19015][14400] P [0]
+[debug][2017-09-15 12:13:51] fwin_farmer0 M[1128][89194][6480] P [0]
+[debug][2017-09-15 12:13:51] fwin_farmer1 M[586990][305493][6480] P [0]
+[debug][2017-09-15 12:13:51] end_game base[150] ratio[48],[1127][1128][586990]
+[debug][2017-09-15 12:13:57] player[586990] login success on game.cc
+[debug][2017-09-15 12:14:01] #########join robot[0][2]########
+[debug][2017-09-15 12:14:08] player[1129] login success on game.cc
+[debug][2017-09-15 12:14:12] player[1130] login success on game.cc
+[debug][2017-09-18 15:03:14] player[587022] login success on game.cc
+[debug][2017-09-18 15:03:18] #########join robot[0][2]########
+[debug][2017-09-18 15:03:24] player[1193] login success on game.cc
+[debug][2017-09-18 15:03:28] player[1194] login success on game.cc
+[debug][2017-09-21 15:14:07] player[587022] login success on game.cc
+[debug][2017-09-21 15:14:11] #########join robot[0][2]########
+[debug][2017-09-21 15:14:14] player[1040] login success on game.cc
+[debug][2017-09-21 15:14:18] player[1041] login success on game.cc
+[debug][2017-09-21 15:14:27] tid[1] start game[587022][1040][1041]
+[debug][2017-09-21 15:16:08] lwin_landlord M[1040] [32195] [3240] P [0]
+[debug][2017-09-21 15:16:08] lwin_farmer M[1041] [103228] [1800] P [0]
+[debug][2017-09-21 15:16:08] lwin_farmer M[587022] [21972] [1800] P [0]
+[debug][2017-09-21 15:16:08] end_game base[150] ratio[12],[1040][1041][587022]
+[debug][2017-09-21 15:16:08] ##lastUp_day_time[1505978168]
+[debug][2017-09-21 15:16:16] player[587022] login success on game.cc
+[debug][2017-09-21 15:16:20] #########join robot[0][2]########
+[debug][2017-09-21 15:16:26] player[1042] login success on game.cc
+[debug][2017-09-21 15:16:28] player[1043] login success on game.cc
+[debug][2017-09-21 15:16:46] player[587022] login success on game.cc
+[debug][2017-09-21 15:16:48] tid[1] start game[1042][1043][587022]
+[debug][2017-09-21 15:18:13] fwin_landlord M[1042][22992][3600] P [0]
+[debug][2017-09-21 15:18:13] fwin_farmer0 M[1043][92581][1620] P [0]
+[debug][2017-09-21 15:18:13] fwin_farmer1 M[587022][23592][1620] P [0]
+[debug][2017-09-21 15:18:13] end_game base[150] ratio[12],[1042][1043][587022]
+[debug][2017-09-21 15:18:14] #########join robot[0][1]########
+[debug][2017-09-21 15:18:22] player[587022] login success on game.cc
+[debug][2017-09-21 15:18:26] player[1044] login success on game.cc
+[debug][2017-09-21 15:18:26] #########join robot[0][1]########
+[debug][2017-09-21 15:18:32] player[1045] login success on game.cc
+[debug][2017-09-21 15:18:41] tid[1] start game[587022][1044][1045]
+[debug][2017-09-21 15:20:12] fwin_landlord M[1044][80393][7200] P [0]
+[debug][2017-09-21 15:20:12] fwin_farmer0 M[1045][85920][3240] P [0]
+[debug][2017-09-21 15:20:12] fwin_farmer1 M[587022][26832][3240] P [0]
+[debug][2017-09-21 15:20:12] end_game base[150] ratio[24],[1044][1045][587022]
+[debug][2017-09-21 15:20:18] player[587022] login success on game.cc
+[debug][2017-09-21 15:20:22] #########join robot[0][2]########
+[debug][2017-09-21 15:20:29] player[1047] login success on game.cc
+[debug][2017-09-21 15:20:30] player[1046] login success on game.cc
+[debug][2017-09-21 15:20:35] tid[2] start game[587022][1047][1046]
+[debug][2017-09-21 15:22:04] fwin_landlord M[1047][12536][66200] P [0]
+[debug][2017-09-21 15:22:04] fwin_farmer0 M[1046][78396][35431] P [0]
+[debug][2017-09-21 15:22:04] fwin_farmer1 M[587022][50980][24148] P [0]
+[debug][2017-09-21 15:22:04] end_game base[150] ratio[768],[1047][1046][587022]
+[debug][2017-09-21 15:22:11] player[587022] login success on game.cc
+[debug][2017-09-21 15:22:15] #########join robot[0][2]########
+[debug][2017-09-21 15:22:20] player[1048] login success on game.cc
+[debug][2017-09-21 15:22:24] player[1049] login success on game.cc
+[debug][2017-09-21 15:22:31] tid[1] start game[587022][1048][1049]
+[debug][2017-09-21 15:24:23] fwin_landlord M[1048][24075][28800] P [0]
+[debug][2017-09-21 15:24:23] fwin_farmer0 M[1049][101284][12960] P [0]
+[debug][2017-09-21 15:24:23] fwin_farmer1 M[587022][63940][12960] P [0]
+[debug][2017-09-21 15:24:23] end_game base[150] ratio[96],[1048][1049][587022]
+[debug][2017-09-21 15:24:30] player[587022] login success on game.cc
+[debug][2017-09-21 15:24:34] #########join robot[0][2]########
+[debug][2017-09-21 15:24:38] player[1051] login success on game.cc
+[debug][2017-09-21 15:24:40] player[1050] login success on game.cc
+[debug][2017-09-21 15:24:47] tid[2] start game[587022][1051][1050]
+[debug][2017-09-21 15:26:20] fwin_landlord M[1050][51877][28800] P [0]
+[debug][2017-09-21 15:26:20] fwin_farmer0 M[1051][78470][12960] P [0]
+[debug][2017-09-21 15:26:20] fwin_farmer1 M[587022][76900][12960] P [0]
+[debug][2017-09-21 15:26:20] end_game base[150] ratio[96],[1050][1051][587022]
+[debug][2017-09-21 15:26:28] player[587022] login success on game.cc
+[debug][2017-09-21 15:26:32] #########join robot[0][2]########
+[debug][2017-09-21 15:26:37] player[1052] login success on game.cc
+[debug][2017-09-21 15:26:41] player[1053] login success on game.cc
+[debug][2017-09-21 15:26:47] tid[1] start game[587022][1052][1053]
+[debug][2017-09-21 15:27:57] fwin_landlord M[1053][36511][3600] P [0]
+[debug][2017-09-21 15:27:57] fwin_farmer0 M[1052][364886][1620] P [0]
+[debug][2017-09-21 15:27:57] fwin_farmer1 M[587022][78520][1620] P [0]
+[debug][2017-09-21 15:27:57] end_game base[150] ratio[12],[1053][1052][587022]
+[debug][2017-09-21 15:28:05] player[587022] login success on game.cc
+[debug][2017-09-22 09:12:05] player[587022] login success on game.cc
+[debug][2017-09-22 09:12:09] #########join robot[0][2]########
+[debug][2017-09-22 09:12:19] player[1066] login success on game.cc
+[debug][2017-09-22 09:12:21] player[1067] login success on game.cc
+[debug][2017-09-22 09:12:28] tid[1] start game[587022][1066][1067]
+[debug][2017-09-22 09:13:46] lwin_landlord M[587022] [131980] [51840] P [0]
+[debug][2017-09-22 09:13:46] lwin_farmer M[1066] [11174] [28800] P [0]
+[debug][2017-09-22 09:13:46] lwin_farmer M[1067] [9928] [28800] P [0]
+[debug][2017-09-22 09:13:46] end_game base[150] ratio[192],[587022][1066][1067]
+[debug][2017-09-22 09:13:46] ##lastUp_day_time[1506042826]
+[debug][2017-09-22 09:13:53] player[587022] login success on game.cc
+[debug][2017-09-22 09:13:55] uid[1066] money[11174] min_money[20000] money too less.
+[debug][2017-09-22 09:13:55] uid[1067] money[9928] min_money[20000] money too less.
+[debug][2017-09-22 09:13:57] #########join robot[0][2]########
+[debug][2017-09-22 09:14:06] player[1068] login success on game.cc
+[debug][2017-09-22 09:14:06] player[1069] login success on game.cc
+[debug][2017-09-22 09:14:13] tid[2] start game[587022][1068][1069]
+[debug][2017-09-22 09:15:46] lwin_landlord M[587022] [144940] [12960] P [0]
+[debug][2017-09-22 09:15:46] lwin_farmer M[1068] [37348] [7200] P [0]
+[debug][2017-09-22 09:15:46] lwin_farmer M[1069] [19797] [7200] P [0]
+[debug][2017-09-22 09:15:46] end_game base[150] ratio[48],[587022][1068][1069]
+[debug][2017-09-22 09:15:53] player[587022] login success on game.cc
+[debug][2017-09-22 09:15:57] #########join robot[0][2]########
+[debug][2017-09-22 09:16:07] player[1070] login success on game.cc
+[debug][2017-09-22 09:16:08] player[1071] login success on game.cc
+[debug][2017-09-22 09:16:13] tid[1] start game[587022][1070][1071]
+[debug][2017-09-22 09:17:45] fwin_landlord M[1070][167549][28800] P [0]
+[debug][2017-09-22 09:17:45] fwin_farmer0 M[1071][507010][12960] P [0]
+[debug][2017-09-22 09:17:45] fwin_farmer1 M[587022][157900][12960] P [0]
+[debug][2017-09-22 09:17:45] end_game base[150] ratio[96],[1070][1071][587022]
+[debug][2017-09-22 09:17:52] player[587022] login success on game.cc
+[debug][2017-09-22 09:17:56] #########join robot[0][2]########
+[debug][2017-09-22 09:18:03] player[1073] login success on game.cc
+[debug][2017-09-22 09:18:09] player[1072] login success on game.cc
+[debug][2017-09-22 09:18:15] tid[2] start game[587022][1073][1072]
+[debug][2017-09-22 09:20:26] fwin_landlord M[1073][90821][7200] P [0]
+[debug][2017-09-22 09:20:26] fwin_farmer0 M[1072][156257][3240] P [0]
+[debug][2017-09-22 09:20:26] fwin_farmer1 M[587022][161140][3240] P [0]
+[debug][2017-09-22 09:20:26] end_game base[150] ratio[24],[1073][1072][587022]
+[debug][2017-09-22 09:20:34] player[587022] login success on game.cc
+[debug][2017-09-23 13:46:41] player[587022] login success on game.cc
+[debug][2017-09-23 13:46:45] #########join robot[0][2]########
+[debug][2017-09-23 13:46:54] player[1084] login success on game.cc
+[debug][2017-09-23 13:46:55] player[1085] login success on game.cc
+[debug][2017-09-23 13:47:01] tid[1] start game[587022][1084][1085]
+[debug][2017-09-23 13:48:56] lwin_landlord M[587022] [53860] [6480] P [0]
+[debug][2017-09-23 13:48:56] lwin_farmer M[1084] [61498] [3600] P [0]
+[debug][2017-09-23 13:48:56] lwin_farmer M[1085] [53115] [3600] P [0]
+[debug][2017-09-23 13:48:56] end_game base[150] ratio[24],[587022][1084][1085]
+[debug][2017-09-23 13:48:56] ##lastUp_day_time[1506145736]
+[debug][2017-09-23 13:49:02] player[587022] login success on game.cc
+[debug][2017-09-23 13:49:06] #########join robot[0][2]########
+[debug][2017-09-23 13:49:14] player[1087] login success on game.cc
+[debug][2017-09-23 13:49:16] player[1086] login success on game.cc
+[debug][2017-09-23 13:49:20] tid[2] start game[587022][1087][1086]
+[debug][2017-09-23 13:50:42] fwin_landlord M[1086][1][45622] P [0]
+[debug][2017-09-23 13:50:42] fwin_farmer0 M[1087][99751][20529] P [0]
+[debug][2017-09-23 13:50:42] fwin_farmer1 M[587022][74389][20529] P [0]
+[debug][2017-09-23 13:50:42] end_game base[150] ratio[384],[1086][1087][587022]
+[debug][2017-09-23 13:50:42] tid[2]broke_free_give[1086][1999].
+[debug][2017-09-23 13:50:48] player[587022] login success on game.cc
+[debug][2017-09-23 13:50:52] #########join robot[0][2]########
+[debug][2017-09-23 13:51:02] player[1088] login success on game.cc
+[debug][2017-09-23 13:51:02] player[1089] login success on game.cc
+[debug][2017-09-23 13:51:11] tid[1] start game[587022][1088][1089]
+[debug][2017-09-23 13:52:32] fwin_landlord M[1088][273710][14400] P [0]
+[debug][2017-09-23 13:52:32] fwin_farmer0 M[1089][58916][6480] P [0]
+[debug][2017-09-23 13:52:32] fwin_farmer1 M[587022][80869][6480] P [0]
+[debug][2017-09-23 13:52:32] end_game base[150] ratio[48],[1088][1089][587022]
+[debug][2017-09-23 13:52:37] player[587022] login success on game.cc
+[debug][2017-09-23 13:52:41] #########join robot[0][2]########
+[debug][2017-09-23 13:52:51] player[1090] login success on game.cc
+[debug][2017-09-23 13:52:54] player[1091] login success on game.cc
+[debug][2017-09-23 13:53:01] tid[2] start game[587022][1090][1091]
+[debug][2017-09-23 13:54:29] lwin_landlord M[587022] [82489] [1620] P [0]
+[debug][2017-09-23 13:54:29] lwin_farmer M[1090] [52479] [900] P [0]
+[debug][2017-09-23 13:54:29] lwin_farmer M[1091] [117505] [900] P [0]
+[debug][2017-09-23 13:54:29] end_game base[150] ratio[6],[587022][1090][1091]
+[debug][2017-09-23 13:54:35] player[587022] login success on game.cc
+[debug][2017-09-23 13:54:39] #########join robot[0][2]########
+[debug][2017-09-23 13:54:46] player[1093] login success on game.cc
+[debug][2017-09-23 13:54:49] player[1092] login success on game.cc
+[debug][2017-09-23 13:54:54] tid[1] start game[587022][1093][1092]
+[debug][2017-09-23 13:56:03] fwin_landlord M[1093][0][41624] P [0]
+[debug][2017-09-23 13:56:03] fwin_farmer0 M[1092][408771][18730] P [0]
+[debug][2017-09-23 13:56:03] fwin_farmer1 M[587022][101219][18730] P [0]
+[debug][2017-09-23 13:56:03] end_game base[150] ratio[384],[1093][1092][587022]
+[debug][2017-09-23 13:56:03] tid[1]broke_free_give[1093][2000].
+[debug][2017-09-23 13:56:10] player[587022] login success on game.cc
+[debug][2017-09-23 13:56:12] uid[1093] money[2000] min_money[20000] money too less.
+[debug][2017-09-23 13:56:14] #########join robot[0][2]########
+[debug][2017-09-23 13:56:21] player[1095] login success on game.cc
+[debug][2017-09-23 13:56:23] player[1094] login success on game.cc

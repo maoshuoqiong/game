@@ -1,0 +1,41 @@
+<?php
+	/**
+	 * 获取用户信息
+	 */
+    class UserInfo extends APIBase {
+		
+		public $tag = "UserInfo";
+		
+        public function before() {
+    		return true;
+		}
+		
+		public function logic() {
+			$user = $this->data_redis->hGetAll("hu:{$this->uid}");
+			$total_board = isset($user['total_board']) ? $user['total_board'] : 0;
+			$total_win = isset($user['total_win']) ? $user['total_win'] : 0;
+			$total_lose = $total_board - $total_win;
+			$hasRcRes = 0;
+			$hasRc = $this->data_redis->hMget("hpe:{$this->uid}", array("hasRecharge","telCharge"));			
+			$user_info = array(
+					'uid' => (int) $this->uid,
+					'user' =>$user['user'],
+					'name' => $user['name'],
+					'sex' => (int) $user['sex'],
+					'money' => (int) $user['money'],
+					'rmb' => (int) $user['rmb'],
+					'coin' => (int) $user['coin'],
+					'history' => array((int) $total_win, (int) $total_lose),
+					'exp' => (int) (isset($user['exp']) ? $user['exp'] : 0),
+					'skey' => $user['skey'],
+					'hasrc' => (int) (isset($hasRc['hasRecharge']) ? $hasRc['hasRecharge'] : 0),
+					'telCharge' => (int) (isset($hasRc['telCharge']) ? $hasRc['telCharge'] : 0)
+			);
+			$this->returnData($user_info);
+		}
+		
+       	public function after() {
+    		$this->deinitDataRedis();
+		}
+    }
+?>

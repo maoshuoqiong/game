@@ -1,0 +1,21 @@
+0、配置初始化 InitCache OK
+1、注册 Register OK
+2、登陆 Login OK
+3、公告 Announcement OK
+4、场馆配置 VenueList OK
+5、在玩人数 OnPlayInfo OK
+6、用户本人用户信息 UserInfo OK
+7、RMB换金币 ExchangeMoney OK
+8、元宝换物品 ExchangeAward OK
+9、充值记录 PayRecord
+10、消息 MessageList OK
+11、排行 RankList OK
+12、反馈 Feedback OK
+13、连续登陆奖励 LoginReward OK
+14、心跳 HeartBeat OK
+15、玩N局奖励 PlayNReward OK
+16、跑马灯 Marquee OK
+17、当天破产次数 BrokeNum OK
+18、领取破产奖励 BrokeGet OK
+19、商品列表 GoodsList OK
+20、奖品列表 AwardList OK

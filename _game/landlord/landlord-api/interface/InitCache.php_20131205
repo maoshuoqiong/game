@@ -1,0 +1,198 @@
+<?php
+    class InitCache extends APIBase {
+
+		public $tag = "InitCache";
+		public $isLogin = false;
+		public $RANK_TYPE_MONEY = 0;
+		public $RANK_TYPE_LEVEL = 1;
+		public $RANK_TYPE_EXP = 2;
+
+		public function before() {
+			$this->initMysql();
+			$this->initCacheRedis();
+			return true;
+		}
+
+		public function logic() {
+			if (!(isset($this->param['pass']) && $this->param['pass'] == Config::$cache_pass)) {
+				$this->returnError(300, "password is error.");
+			}
+
+			$flag = false;
+			if (isset($this->param['all']) && $this->param['all'] == 1) {
+				$flag = true;
+			}
+
+			if ($flag || (isset($this->param['venue']) && $this->param['venue'] == 1)) {
+				$this->loadVenue();
+			}
+
+			if ($flag || (isset($this->param['announcement']) && $this->param['announcement'] == 1)) {
+				$this->LoadAnnouncement();
+			}
+
+			if ($flag || (isset($this->param['goods']) && $this->param['goods'] == 1)) {
+				$this->LoadGoods();
+			}
+
+			if ($flag || (isset($this->param['award']) && $this->param['award'] == 1)) {
+				$this->LoadAward();
+			}
+
+			if ($flag || (isset($this->param['rank']) && $this->param['rank'] == 1)) {
+				$this->LoadRank();
+			}
+			if ($flag || (isset($this->param['lottery']) && $this->param['lottery'] == 1)) {
+				$this->LoadLottery();
+			}
+			if ($flag || (isset($this->param['robot']) && $this->param['robot'] == 1)) {
+				$this->LoadRobot();
+			}
+			if ($flag || (isset($this->param['loginreward']) && $this->param['loginreward'] == 1)) {
+				$this->LoadLoginreward();
+			}
+		}
+
+		private  function clear($regex) {
+			foreach ($regex as $re) {
+				$keys = $this->cache_redis->keys($re);
+				foreach ($keys as $key) {
+					$this->cache_redis->del($key);
+				}
+			}
+		}
+		
+		private function LoadRobot() {
+			$ilst = explode(",", Config::$robotList);
+			$this->clear(array("lrob:ids"));
+			$now = time();
+			$skey = md5($now . Game::$salt_password);
+			for ($g=$ilst[0];$g<=$ilst[1];$g++) {
+				$row = $this->mysql->select("player", "*", array('id' => $g));
+				$this->initDataRedis($g);
+				$isExists = $this->data_redis->exists("hu:{$g}");
+				if (!$isExists) {
+					$this->data_redis->hMset("hu:{$g}", $row[0]);
+				}				
+				
+				$this->data_redis->hMset("hu:$g", array("update_time" => $now, "heartbeat_at" => $now, "skey" => $skey));
+				$this->cache_redis->rPush("lrob:ids",$g);
+			}
+			$this->cache_redis->set("srob:skey",$skey);
+			$listkeys = count($this->cache_redis->lRange("lrob:ids", 0, -1));
+			echo "LoadRobot {{$listkeys}} data success...<br>";
+			$this->i("LoadRobot {{$listkeys}} data success..."); 
+		}
+		
+   		private function LoadLottery() {
+			$row = $this->mysql->find("SELECT * FROM `lottery` Where `status`=1 order by id");
+			$this->clear(array("hlt:*", "llt:ids"));
+			foreach ($row as $g) {
+				$id = $g['id'];
+				$this->cache_redis->rPush("llt:ids", $id);
+				$this->cache_redis->hMset("hlt:{$id}", $g);
+			}
+			$hkeys = count($this->cache_redis->keys("hlt:*"));
+			$listkeys = count($this->cache_redis->lRange("llt:ids", 0, -1));
+			echo "LoadLottery {llt: {$hkeys}, hlt: {$listkeys}} data success...<br>";
+			$this->i("LoadLottery {llt: {$hkeys}, hlt: {$listkeys}} data success...");
+		}
+		
+		private function LoadLoginreward() {
+			$row = $this->mysql->find("SELECT * FROM `loginreward` order by id");
+			$this->clear(array("hlr:*", "llr:ids"));
+			foreach ($row as $g) {
+				$id = $g['id'];
+				$this->cache_redis->rPush("llr:ids", $id);
+				$this->cache_redis->hMset("hlr:{$id}", $g);
+			}
+			$hkeys = count($this->cache_redis->keys("hlr:*"));
+			$listkeys = count($this->cache_redis->lRange("llr:ids", 0, -1));
+			echo "LoadLoginreward {llr: {$hkeys}, hlr: {$listkeys}} data success...<br>";
+			$this->i("LoadLoginreward {llr: {$hkeys}, hlr: {$listkeys}} data success...");
+		}
+		
+		private function loadVenue() {
+			$row = $this->mysql->find("SELECT * FROM `venue`");
+			$this->clear(array("hv:*", "lv:ids"));
+			foreach ($row as $v) {
+				$id = $v['id'];
+				unset($v['id']);
+				$this->cache_redis->rPush("lv:ids", $id);
+				$this->cache_redis->hMset("hv:{$id}", $v);
+			}
+			$hkeys = count($this->cache_redis->keys("hv:*"));
+			$listkeys = count($this->cache_redis->lRange("lv:ids", 0, -1));
+			echo "LoadVenue {lv: {$hkeys}, hv: {$listkeys}} data success...<br>";
+			$this->i("LoadVenue {lv: {$hkeys}, hv: {$listkeys}} data success...");
+		}
+
+		private function LoadAnnouncement() {
+			$row = $this->mysql->find("SELECT * FROM `announcement` WHERE `status`=1 ORDER BY `create_time` DESC LIMIT 0, 1");
+			$this->clear(array("ha:*"));
+			$total = 0;
+			foreach ($row as $a) {
+				$id = $a['id'];
+				$this->cache_redis->hMset("ha:", $a);
+				$total++;
+			}
+			$keys = count($this->cache_redis->keys("ha:*"));
+			echo "LoadAnnouncement {ha: {$keys}} data success...<br>";
+			$this->i("LoadAnnouncement {ha: {$keys}} data success...");
+		}
+
+		private function LoadGoods() {
+			// 正常充值
+			$row = $this->mysql->find("SELECT * FROM `goods` Where `status`>0");
+			$this->clear(array("hg:*", "lg:ids", "lgf:ids"));
+			foreach ($row as $g) {
+				$id = $g['id'];
+				$st = $g['status'];
+				if($st==1){
+					$this->cache_redis->rPush("lg:ids", $id);
+				}elseif ($st==2){
+					$this->cache_redis->rPush("lgf:ids", $id);					
+				}
+				$this->cache_redis->hMset("hg:{$id}", $g);
+			}
+			$listkeys = count($this->cache_redis->lRange("lg:ids", 0, -1));
+			$listkeys2 = count($this->cache_redis->lRange("lgf:ids", 0, -1));
+			$hkeys = count($this->cache_redis->keys("hg:*"));
+			echo "LoadGoods {lg: {$listkeys}, lgf: {$listkeys2}}, hg: {$hkeys}} data success...<br>";
+			$this->i("LoadGoods {lg: {$listkeys}, lgf: {$listkeys2}}, hg: {$hkeys}} data success...");
+		}
+
+    	private function LoadAward() {
+			$row = $this->mysql->find("SELECT * FROM `award` Where `status`=1 order by sortId desc");
+			$this->clear(array("haw:*", "law:ids"));
+			foreach ($row as $aw) {
+				$id = $aw['id'];
+				$this->cache_redis->rPush("law:ids", $id);
+				$this->cache_redis->hMset("haw:{$id}", $aw);
+			}
+			$hkeys = count($this->cache_redis->keys("haw:*"));
+			$listkeys = count($this->cache_redis->lRange("law:ids", 0, -1));
+			echo "LoadAward {law: {$hkeys}, haw: {$listkeys}} data success...<br>";
+			$this->i("LoadAward {law: {$hkeys}, haw: {$listkeys}} data success...");
+		}
+
+		private function LoadRank() {
+			$row = $this->mysql->find("SELECT * FROM `rank` ORDER BY `type`,`no`");
+			$this->clear(array("hr:*", "lr:ids"));
+			foreach ($row as $r) {
+				$id = $r['id'];
+				$this->cache_redis->rPush("lr:ids", $id);
+				$this->cache_redis->hMset("hr:{$id}", $r);
+			}
+			$hkeys = count($this->cache_redis->keys("hr:*"));
+			$listkeys = count($this->cache_redis->lRange("lr:ids", 0, -1));
+			echo "LoadRank {lr: {$hkeys}, hr: {$listkeys}} data success...<br>";
+			$this->i("LoadRank {lr: {$hkeys}, hr: {$listkeys}} data success...");
+		}
+
+		public function after() {
+			$this->deinitCacheRedis();
+			$this->deinitMysql();
+		}
+    }
+?>

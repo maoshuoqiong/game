@@ -1,0 +1,169 @@
+斗地主协议
+1、加入桌子
+request
+cmd : CLIENT_JOIN_TABLE_REQ
+type : 1  // 比如新手场为1，初级场为2，中级场为3，高级场为4
+zone : 1 // 区服id，自定义，0表示没有
+uid : 1001
+skey : 1abdff
+
+response ok
+cmd : SERVER_JOIN_TABLE_SUCC
+type : 1
+sid : 1
+tid	 : 1
+seatid : 1
+
+response ng
+cmd : SERVER_JOIN_TABLE_ERR
+error_code : 1 // 1: skey error, 2: type no found, 3: zone no found, 4: type no match zone, 5: timeout
+
+3、桌子信息
+cmd : SERVER_TABLE_INFO_BC
+users: [
+{
+uid : 1002
+name : gg2
+sex : 1
+birthday: 1986/09/10
+zone : beijing
+level : 40
+exp : 10003
+money : 123334
+coin : 23333
+total_board: 400
+total_win: 180
+},
+{
+uid : 1003
+name : gg3
+sex : 1
+birthday: 1986/09/10
+zone : beijing
+level : 40
+exp : 10003
+money : 123334
+coin : 23333
+total_board: 400
+total_win: 180
+}
+]
+
+4、准备
+request
+cmd : game_ready
+uid : 1001
+
+response ok
+cmd : game_ready_ok
+uid : 1001
+
+response ng
+cmd : game_ready_ng
+error_code : 1
+
+5、游戏开始
+boardcast
+cmd : game_start
+c : [0x01, 0x02, 0x03] // 3张公牌
+private : [0x4 ... 0x15] // 17张公牌
+
+6、叫分抢地主
+boardcast
+cmd : call_landlord_turn
+uid : 1001
+who : 1
+action : 1 // 1表示可以叫1、2、3分，2表示可以叫2，3分，3表示可以叫3分，4表示抢地主
+
+submit
+cmd : call_landlord_submit
+uid : 1001 
+action : 0 // 0表示不叫或者不抢，1表示叫一分，2表示叫2分，3表示叫三分，4表示抢地主
+
+boardcast
+cmd : landlord_info
+uid : 1001 // 谁是地主
+ratio : 3
+
+7、出牌
+boardcast
+cmd : play_card
+uid : 1001
+flag : 0 // 0表示新出牌，1表示跟随出牌
+
+submit
+cmd : play_card_submit
+uid : 1001
+cards : [0x1 .. 0xx] //
+card_type : 1 // 牌型：飞机、炸弹、对子等等 , 特殊0表示pass，但是新出牌必须要出
+
+unicast
+cmd : play_card_ng
+uid : 1001
+error_code: 1
+
+boardcast
+cmd : play_card_info
+uid : 1001
+cards : [0x1 .. 0xx] //
+card_type : 1 // 牌型：飞机、炸弹、对子等等 , 特殊0表示pass，但是新出牌必须要出
+
+8、游戏结束
+boardcast
+cmd : game_end
+win_type : 0 // 0 表示地主赢了，1表示农民赢, 2有用户强行退出
+
+users : [
+{
+uid : 1001
+money : 12345
+win : 1 // 0表示输了，1表示赢了
+cmoney : 20
+coin : 2
+},
+{
+uid : 1002
+money : 12345
+win : 1 // 0表示输了，1表示赢了
+cmoney : 20
+coin : 2
+},
+{
+uid : 1003
+money : 12345
+win : 0 // 0表示输了，1表示赢了
+cmoney : 40
+coin : 2
+}
+]
+
+9、强行退出
+request
+cmd : force_quit
+uid : 1001
+
+response ok
+cmd : force_ok
+uid : 1001
+
+10、登出房间
+request
+cmd : logout
+uid : 1001
+
+response ok
+cmd : logout_ok
+uid : 1001
+
+11、换桌
+request
+cmd : swap_table
+uid : 1001
+
+
+
+
+
+
+
+

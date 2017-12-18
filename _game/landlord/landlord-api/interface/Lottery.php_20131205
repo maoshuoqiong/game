@@ -1,0 +1,212 @@
+<?php
+	/**
+	 * 抽奖
+	 */
+    class Lottery extends APIBase {
+
+		public $tag = "Lottery";
+		public $LOTTERY_TYPE_MONEY = 0;			// 金币
+		public $LOTTERY_TYPE_COIN = 1;			// 元宝
+		public $LOTTERY_TYPE_TELCHARGE = 2;		// 话费券
+		public $LOTTERY_TYPE_DIGITAL_PROD = 3;	// 数码大奖
+
+		public function before() {
+			$this->initMysql();
+			$this->initCacheRedis();
+			return true;
+		}
+
+		public function logic() {
+			$now = time();
+			$limitMax = Config::$lotteryMaxTime;
+
+			if (Game::$lottery_isopen == 0) {
+				$this->returnError(300, '抽奖已关闭');
+				return;
+			}
+			if (!isset($this->param['actType'])) {
+				$this->returnError(302, '非法操作');
+				return;
+			}
+
+			$pExt = $this->data_redis->hMGet("hpe:{$this->uid}", array("telCharge","lastLotteryDate","lastPrizeDate", "currLotteryNum"));
+			$login_days = $this->data_redis->hGet("hu:{$this->uid}","login_days");
+			if ($pExt['telCharge']==null) {
+				$pExt = $this->initPlayerExt($this->uid);
+			}
+// 			echo $login_days;
+/* 			echo "###111##<br/>";
+			echo $pExt['continueLoginDays']."<br/>";
+			echo $pExt['currLotteryNum']."<br/>";
+			echo "###111##<br/>"; */
+			$actType = $this->param['actType'];
+			$isSameLotteryDay = CommonTool::isSameDay($pExt['lastLotteryDate'], $now);
+			$isSamePrizeDay = CommonTool::isSameDay($pExt['lastPrizeDate'], $now);
+			$remTime = $this->getRemainTime($pExt,$isSameLotteryDay,$now,$login_days);
+			$pExt['lastLotteryDate'] = $now;
+			$lotteryPrize = $this->getLotteryPrize($this->uid, $isSamePrizeDay);
+/*   			echo "###000##<br/>";
+			print_r($lotteryPrize);
+			echo "###000##<br/>";   */ 
+			
+			if($actType == "lPrize"){
+				$this->updateLotteryDate($isSamePrizeDay,$now);
+				return $this->returnData(array('rem_num' => $remTime,'telCharge' => (int)$pExt['telCharge'], 'res' => $lotteryPrize));
+			}else if($actType == "lRes"){
+				$remTime -= 1; 
+				if($remTime<0){
+					//$isSameDay && ($pExt['currLotteryNum']>=$limitMax ||$pExt['continueLoginDays'] == $pExt['currLotteryNum'])
+					$this->returnError(301, '当日抽奖次数已用完');
+					return;
+				}
+/* 
+				echo "###222##<br/>";
+				echo $pExt['continueLoginDays']."<br/>";
+				echo $pExt['currLotteryNum']."<br/>";
+				echo $remTime."<br/>";
+				echo "###222##<br/>"; */
+
+				$lotteryRes = $this->calLotteryRes($this->uid);
+				$this->syncLotteryToPlayer($lotteryRes,$pExt,$lotteryPrize);
+				$mon = $this->data_redis->hMget("hu:{$this->uid}", array('money','coin'));
+				return $this->returnData(array('rem_num' => $remTime,'telCharge' => (int)$pExt['telCharge'],
+						  'curr_money' => (int)$mon['money'],'curr_coin' => (int)$mon['coin'],'res_ind' => $lotteryRes));
+			}else{
+				$this->returnError(302, '非法操作');
+				return;
+			}
+		}
+
+		public function updateLotteryDate($isSameDay,$now){
+			if(!$isSameDay){
+				$this->data_redis->hMset("hpe:{$this->uid}", array("lastPrizeDate"=>$now));
+			}
+		}
+		
+		public function syncLotteryToPlayer($lotteryRes,&$pExt,$lotteryPrize){
+			if($lotteryRes>sizeof($lotteryPrize)){
+				$this->returnError(303, '内部错误');
+				return;
+			}
+
+			$lotteryItem = $lotteryPrize[$lotteryRes];
+// 			echo "###333##<br/>";
+// 			print_r($lotteryItem);
+// 			echo "###333##<br/>";
+			if($lotteryItem['awardType']==$this->LOTTERY_TYPE_TELCHARGE){
+				$pExt['telCharge'] += $lotteryItem['amount'];
+				$this->mysql->update("playerext",array('telCharge' => $pExt['telCharge']), array('uid' => $this->uid));
+			}else if($lotteryItem['awardType']==$this->LOTTERY_TYPE_DIGITAL_PROD){
+				$lottLog['hasGet'] = 0;
+			}
+
+			$lottLog = array();
+			$lottLog['uid'] = $this->uid;
+			$lottLog['awardType'] = $lotteryItem['awardType'];
+			$lottLog['amount'] = $lotteryItem['amount'];
+			$lottLog['hasGet'] = 1;
+			$lottLog['createdate'] = date('Y-m-d H:i:s');
+// 			echo date('Y-m-d H:i:s');
+			$ret = $this->mysql->insert("lotterylog", $lottLog);
+// 			echo "insert lottery log.$ret";
+
+			// 更新玩家基础信息
+			$user_info = $this->data_redis->hMget("hu:{$this->uid}", array('money', 'coin'));
+			if($lotteryItem['awardType']==$this->LOTTERY_TYPE_MONEY){
+				$user_info['money'] = (int)$user_info['money']+$lotteryItem['amount'];	
+				$this->data_redis->hMset("hu:{$this->uid}", array('money' => $user_info['money']));
+			}else if($lotteryItem['awardType']==$this->LOTTERY_TYPE_COIN){
+				$user_info['coin'] = (int)$user_info['coin']+$lotteryItem['amount'];
+				$this->data_redis->hMset("hu:{$this->uid}", array('coin' => $user_info['coin']));
+			}			
+			
+			// 更新玩家扩展信息
+			$this->data_redis->hMset("hpe:{$this->uid}", array("lastLotteryDate"=>$pExt['lastLotteryDate']
+					, "telCharge" => $pExt['telCharge'],"currLotteryNum"=>$pExt['currLotteryNum']));
+		}
+
+		public function getLotteryPrize($uid,$isSameDay){
+			$goods = array();
+			if($isSameDay){
+				$resArr = array();
+				$prizeStr = $this->cache_redis->get("hltp:{$uid}");	
+				$prizeArr = json_decode($prizeStr);
+				foreach ($prizeArr as $key) {					
+					$goods["awardType"] = (int)$key->awardType;
+					$goods["amount"] = (int)$key->amount;
+					$resArr[] = $goods;
+				}				
+			}else{
+				$resArr = array('','','','','','','','','','');
+				$identity = CommonTool::isVip($uid);
+				$keys = $this->cache_redis->lRange("llt:ids", 0, -1);
+				foreach ($keys as $key) {
+					$temp = $this->cache_redis->hMGet("hlt:{$key}", array("awardType","amount","sortInd"));
+					$goods["awardType"] = (int)$temp["awardType"];
+					$goods["amount"] = (int)$this->randAmount($temp["amount"]);
+					$sortInd = (int)$temp["sortInd"];
+					$resArr[$sortInd] = $goods;
+				}
+				$this->cache_redis->set("hltp:{$uid}",json_encode($resArr));
+			}
+			return $resArr;
+		}
+
+		public function getRemainTime(&$pExt,$isSameDay,$now,$login_days){
+			if(Config::$debug && CommonTool::isTestUser($this->uid)){
+				return 100;
+			}
+			if($pExt['currLotteryNum']==0 && $login_days<=1){
+				$pExt['currLotteryNum'] = 1;
+				return 1;
+			}
+			if($isSameDay){
+				$pExt['currLotteryNum'] += 1;
+			}else{
+				$pExt['currLotteryNum'] = 1;
+			}
+			
+			$limitMax = Config::$lotteryMaxTime;
+			$limitMax = $login_days>$limitMax?$limitMax:$login_days;
+/* 			echo "###111##<br/>";
+			echo $pExt['continueLoginDays']."<br/>";
+			echo $pExt['currLotteryNum']."<br/>";
+			echo "###111##<br/>"; */
+			return $limitMax-$pExt['currLotteryNum']+1;
+		}
+
+		public function calLotteryRes($uid){
+			$identity = CommonTool::isVip($uid);
+			$keys = $this->cache_redis->lRange("llt:ids", 0, -1);
+			$resArr = array();
+			$rand = mt_rand(1, 10000);
+			$cal = 0;
+// 			echo "@@rand:$rand";
+			foreach ($keys as $key) {
+				$goods = $this->cache_redis->hMGet("hlt:{$key}", array("userTypeProb","sortInd"));
+				$probArr = explode(",", $goods["userTypeProb"]);
+				$prob = $probArr[$identity];
+				$cal += $prob;
+				if($cal>=$rand){
+					return (int)$goods["sortInd"];
+				}
+			}
+		}
+
+		public function randAmount($amountArr){
+			$amoutArr = explode(",", $amountArr);
+			$arrLen = sizeof($amoutArr);
+			if($arrLen==1){
+				return $amoutArr[0];
+			}
+			$rand = mt_rand(0, $arrLen-1);
+			return $amoutArr[$rand];
+		}
+
+		public function after() {
+    		$this->deinitDataRedis();
+			$this->deinitCacheRedis();
+			$this->deinitMysql();
+		}
+    }
+?>

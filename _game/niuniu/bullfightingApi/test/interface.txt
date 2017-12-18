@@ -1,0 +1,299 @@
+﻿27：下载头像
+REQ : $ApiUrl?action=DownloadImag&uid=xxx&skey=xxxx
+RESP: 图片二进制流
+      
+26：上传头像
+REQ : $ApiUrl?action=UploadImag&uid=xxx&skey=xxxx
+RESP: {"ret":0,"desc":"","data":"上传成功"}
+      {"ret":301,"desc":"上传失败reason"}}
+      
+25：购买VIP
+REQ : $ApiUrl?action=ExchangeMoneyNew&uid=xxx&skey=xxxx&param=xxx
+		$param['vid']="vip ID"
+		$param['orderId']="订单ID"
+		$param['sdkId']="sdk Id"
+		$param['orderNo']="订单号"
+RESP: {"ret":0,"desc":"","data":{"money":"当前金币","coin":"当前元宝","rmb":"当前人民币"}}
+      {"ret":301,"desc":"暂无活动"}}
+      
+24：VIP列表
+REQ : $ApiUrl?action=VipsList&param=xxx
+RESP: {"ret":0,"desc":"","data":{"vips":[{"id":ID,"name":标题,"days":VIP天数,"rmb":购买价格,"money":赠送的金币},{...}]}}
+      {"ret":301,"desc":"暂无活动"}}
+      
+23：玩家相关游戏数据
+REQ : $ApiUrl?action=GameData&uid=xxx&skey=xxxx
+		$param['imsi']=""
+		$param['appId']=""
+		$param['cpId']=""
+		$param['sdks']=""
+RESP: {"ret":0,"desc":"","data":{"sdk":"SDK号","noread":"是否有未读消息","vip":"vip剩余天数(0表示不是VIP)"}
+
+22：客户端通知栏消息
+REQ : $ApiUrl?action=PushMsg
+RESP: {"ret":0,"desc":"","data":{"msg":"内容"}}
+	  {"ret":301,"desc":"暂无消息"}}
+	  
+21：杂类配置接口
+REQ : $ApiUrl?action=ConfigInfo&uid=xxx&skey=xxxx
+RESP: {"ret":0,"desc":"","data":{"act_url":"活动URL","reg_open":"注册开关","slot_lt":"老虎机门槛","slot_rt":"老虎机下注时间","slot_ba":"抵住","speak_coin":"喊话需要的元宝"}}
+      
+20：花元宝修改昵称(请求和反馈旧接口一样，仅错误返回的提示内容不同而已)
+REQ : $ApiUrl?action=ModifyInfoNew&uid=xxx&skey=xxxx
+	$param['name']="昵称"
+	$param['sex']="性别"
+RESP: ....
+
+19：昨日充值榜
+REQ : $ApiUrl?action=RechargeRank&uid=xxx&skey=xxxx
+RESP: {"ret":0,"desc":"","data":{"res":[{"no":名次,"na":昵称,"s":性别,"am":积分},{...}]}}
+      {"ret":301,"desc":"还没有人上榜"}}
+      
+18：喊话列表
+REQ : $ApiUrl?action=MarqueeList&uid=xxx&skey=xxxx
+RESP: {"ret":0,"desc":"","data":{"res":[{"u":玩家名称,"m":内容},{...}]}}
+      {"ret":301,"desc":"暂无人喊话"}}
+
+18：喊话需要消耗的元宝
+REQ : $ApiUrl?action=MarqueeList
+	$param['tp']="1"
+RESP: {"ret":0,"desc":"","data":{"need_coin":喊话需要消耗的元宝}}
+      
+17：喊话
+REQ : $ApiUrl?action=MarqueeSend&uid=xxx&skey=xxxx&param=xxx
+		$param['msg']="喊话内容"
+RESP: {"ret":0,"desc":"喊话成功"}
+      {"ret":301,"desc":"error Info"}}
+      
+牌桌内喊话推送CMD{
+	cmd:4031
+	name:玩家姓名
+	msg:喊话内容
+}
+      
+16：兑换记录
+REQ : $ApiUrl?action=ExchangeRecord&uid=xxx&skey=xxxx&param=xxx
+RESP: {"ret":0,"desc":"","data":{"mno":"我的排名","mam":"我的额度","res":[{"info":兑换详情,"ct":兑换时间},{...}]}}
+      {"ret":301,"desc":"暂无兑换记录"}}
+
+15：修改密码
+REQ : $ApiUrl?action=ChangePwd&uid=xxx&skey=xxxx&param=xxx
+		$param['pw']="新密码"
+		$param['rpw']="确认新密码"
+RESP: {"ret":0,"desc":"密码修改成功"}
+      {"ret":301,"desc":"两次输入不一致"}}
+      
+14：举报
+REQ : $ApiUrl?action=Cheat&uid=xxx&skey=xxxx&param=xxx
+		$param['cuid']="被举报人ID"
+		$param['ctype']="举报类型(0:作弊,1:色情..)"
+RESP: {"ret":0,"desc":"举报成功"}
+      {"ret":301,"desc":"举报失败，信息异常"}}
+
+13：活动模块
+13-1 活动列表     
+REQ : $ApiUrl?action=ActivityList&param=xxx
+RESP: {"ret":0,"desc":"","data":{"res":[{"id":活动ID,"tit":标题,"cont":活动内容,"st":活动开始时间,"et":活动结束时间},{...}]}}
+      {"ret":301,"desc":"暂无活动"}}
+      
+13-2 活动排名     
+REQ : $ApiUrl?action=ActivityRank&uid=xxx&skey=xxxx&param=xxx
+		$param['id']="活动ID"
+RESP: {"ret":0,"desc":"","data":{"mno":我的名次(0<mno<=15,-1表示未入榜),"mam":我的积分,"res":[{"no":名次,"na":昵称,"s":性别,"am":积分},{...}]}}
+      {"ret":301,"desc":"暂无活动"}}
+      
+13：需要屏蔽的模块       
+REQ : $ApiUrl?action=VerifyModule&param=xxx
+		$param['cpId']="cpId"
+RESP: {"ret":0,"desc":"","data":[{"id":模块ID},{...}]}
+      {"ret":301,"desc":"没有需要屏蔽的模块或参数错误"}}
+      
+12：需要屏蔽的模块       
+REQ : $ApiUrl?action=VerifyModule&param=xxx
+		$param['cpId']="cpId"
+RESP: {"ret":0,"desc":"","data":[{"id":模块ID},{...}]}
+      {"ret":301,"desc":"没有需要屏蔽的模块或参数错误"}}
+ 
+11：是否有未读消息     
+REQ : $ApiUrl?action=NoReadMess&uid=xxx&skey=xxxx
+RESP: {"ret":0,"desc":"","data":{"noread":1有未读消息,0没有未读消息}}
+           
+10：系统消息      
+10-1 系统消息列表     
+REQ : $ApiUrl?action=MessageListNew&uid=xxx&skey=xxxx&param=xxx
+RESP: {"ret":0,"desc":"","data":{"mes":[{"ti":标题,"d":时间,"id":ID,"ir":是否已读(0:未读,1:已读)},{...}]}}
+      {"ret":301,"desc":"暂无消息"}}
+
+10-2 系统消息详情     
+REQ : $ApiUrl?action=MessageListNew&uid=xxx&skey=xxxx&param=xxx
+	  $param['id']="消息ID"
+RESP: {"ret":0,"desc":"","data":{"mes":[{"c":内容,"ti":标题,"d":时间}]}}
+      {"ret":301,"desc":"暂无消息"}}
+      
+9：个人消息 
+9-1 个人消息列表     
+REQ : $ApiUrl?action=PerMessList&uid=xxx&skey=xxxx&param=xxx
+RESP: {"ret":0,"desc":"","data":{"mes":[{"ty":类型(0:反馈,1:系统私信),"ti":标题,"d":时间,"id":ID,"ir":是否已读(0:未读,1:已读)},{...}]}}
+      {"ret":301,"desc":"暂无消息"}}
+
+9-2 个人消息详情     
+REQ : $ApiUrl?action=PerMessList&uid=xxx&skey=xxxx&param=xxx
+	  $param['id']="消息ID"
+RESP: {"ret":0,"desc":"","data":{"mes":[{"c":内容,"ty":类型(0:反馈,1:系统私信),"ti":标题,"d":时间,"id":ID,"ir":是否已读(0:未读,1:已读)}]}}
+      {"ret":301,"desc":"暂无消息"}}
+      
+8:绑定手机号
+REQ : $ApiUrl?action=BindMob&uid=xxx&skey=xxxx&param=xxx
+	  $param['mob']="手机号" 
+RESP: {"ret":0,"desc":"","data":{mob:111111111}]}
+      {"ret":301,"desc":"mob must"}
+      {"ret":302,"desc":"mob is error"}
+      {"ret":303,"desc":"has bind"}
+      {"ret":304,"desc":"other has bind"}
+      
+7:老虎机
+7-1：请求所有项
+REQ : $ApiUrl?action=Slot&uid=xxx&skey=xxxx&param=xxx
+	  $param['at']="list" 
+RESP: {"ret":0,"desc":"","data":{"mon":金币,"ba":底注,"bl":门槛,"res":[{"id":ID,"tp":类型(-1飞禽,0走兽,1银鲨,2金鲨),"od":赔率,"dc":名称},{...}]}}
+      {"ret":300,"desc":"老虎机已关闭"}}
+      {"ret":301,"desc":"参数错误"}}
+      {"ret":303,"desc":"非法请求"}}
+      
+7-2：获得结果      
+REQ : $ApiUrl?action=Slot&uid=xxx&skey=xxxx&param=xxx
+	  $param['at']="bet" 	  // 
+	  $param['ba']= "20000";  // 如果修改了抵住，则此参数必须
+	  $param['i4']= "1";	  // i为前缀,后面紧跟ID
+RESP: {"ret":0,"desc":"","data":{'mon' => 当前金币,'wmon' => 赢取的金币,'res' => 结果索引,
+						'currn' => 当前次数,'wcoin' => 赢取的元宝}}}
+      {"ret":300,"desc":"老虎机已关闭"}}
+      {"ret":301,"desc":"参数错误"}}
+      {"ret":301,"desc":"金币不足"}}
+      {"ret":303,"desc":"非法请求"}}
+
+5:每局任务
+5-1：查询每局任务列表
+REQ : $ApiUrl?action=Tasks&uid=xxx&skey=xxxx&param=xxx
+	  $param['ttype']="rou" 
+	  $param['atype']="list" 
+RESP: {"ret":0,"desc":"","data":{"sub":[{"id":任务ID,"fn":需完成次数,"at":奖励类型,"am":奖励数额,"dc":描述},{...}]}}
+######游戏内部推送任务状态Start#######
+发布任务{
+cmd:server_game_start_uc(4005)
+增加一个属性
+taskid:xxx
+}
+完成任务{
+cmd:server_task_finish_bc(4030)
+fplayer:xxx(完成任务的玩家ID)
+taskid:xxx
+}
+######游戏内部推送任务状态End#########
+
+4:成就任务
+4-1：查询成就任务列表
+REQ : $ApiUrl?action=Tasks&uid=xxx&skey=xxxx&param=xxx
+	  $param['ttype']="ach" 
+	  $param['atype']="list" 
+RESP: {"ret":0,"desc":"","data":{"sub":[{"id":任务ID,"fn":需完成次数,"at":奖励类型,"am":奖励数额,"dc":描述,"tt":称号},{...}]}}
+
+4-2：查询成就任务状态
+REQ : $ApiUrl?action=Tasks&uid=xxx&skey=xxxx&param=xxx
+	  $param['ttype']="ach" 
+	  $param['atype']="status" 
+RESP: {"ret":0,"desc":"","data":{"sub":[{"id":任务ID,"cn":已完成次数,"isg":是否领取(0:不可领,1:可领,2:已领)},{...}]}}
+
+4-3：领奖
+REQ : $ApiUrl?action=Tasks&uid=xxx&skey=xxxx&param=xxx
+	  $param['ttype']="ach" 
+	  $param['atype']="status" 
+	  $param['id']="任务ID" 	  
+RESP: {"ret":0,"desc":"","data":{"sub":[{"id":任务ID,"cn":已完成次数,"isg":是否领取(0:不可领,1:可领,2:已领)},{...}]}}
+	  {"ret":301,"desc":"非法操作"}}
+	  {"ret":302,"desc":"任务未完成"}}
+	  {"ret":303,"desc":"已领奖"}}
+	  
+3:日常任务			
+3-2：查询日常任务状态
+REQ : $ApiUrl?action=Tasks&uid=xxx&skey=xxxx&param=xxx
+	  $param['ttype']="day" 
+	  $param['atype']="status" 
+RESP: {"ret":0,"desc":"","data":{"tot":{"at":总奖励类型(0:金币,1:元宝),"am":总奖励数额,"isg":总奖励是否领取(0:不可领,1:可领,2:已领)},
+			"sub":[{"id":任务ID,"fn":需完成次数,"at":奖励类型,"am":奖励数额,"dc":描述,"cn":已完成次数,"isg":是否领取(0:不可领,1:可领,2:已领)},{...}]}}
+			
+3-3：领奖
+REQ : $ApiUrl?action=Tasks&uid=xxx&skey=xxxx&param=xxx
+	  $param['ttype']="day" 
+	  $param['atype']="status" 
+	  $param['id']="任务ID(完成当日所有子任务后可领取的总奖励用0表示)" 	  
+RESP: {"ret":0,"desc":"","data":{"tot":{"at":总奖励类型(0:金币,1:元宝),"am":总奖励数额,"isg":总奖励是否领取(0:不可领,1:可领,2:已领)},
+			"sub":[{"id":任务ID,"fn":需完成次数,"at":奖励类型,"am":奖励数额,"dc":描述,"cn":已完成次数,"isg":是否领取(0:不可领,1:可领,2:已领)},{...}]}}
+	  {"ret":301,"desc":"非法操作"}}
+	  {"ret":303,"desc":"未达到领奖条件"}}
+	  {"ret":304,"desc":"已经领过奖了"}}
+	  {"ret":305,"desc":"任务类型不符"}}
+
+2: 连续登录奖励
+2-1：请求所有奖项
+REQ : $ApiUrl?action=LoginReward&uid=xxx&skey=xxxx&param=xxx
+	  $param['actType']="rlist" 
+RESP: {"ret":0,"desc":"","data":{"res":[{"contday":第N天登录,"awardtype":奖励类型(0:金币,1:元宝,2:其他),"amount":奖励数额},{...}]}}
+      
+2-2：执行领取结果      
+REQ : $ApiUrl?action=LoginReward&uid=xxx&skey=xxxx&param=xxx
+	  $param['actType']="rres" 
+RESP: {"ret":0,"desc":"","data":{"atype":0:金币,1:元宝,"amount":"当前数量"}}
+      {"ret":321,"desc":"已领奖"}}
+      
+1:实物兑换
+1-1：请求实物兑换列表
+REQ : $ApiUrl?action=AwardList
+RESP: {"ret":0,"desc":"","data":{"res":[{"id":"兑奖ID","type":"奖品类型0,话费;1,Q币","coin":"需要的元宝","name":"实物TITLE","imag":"实物图片或路径(预留)","num":"实物数量(-1表示不限数量;>0有数量限制)","desc":"实物描述","start_time":"兑换开始时间(0表示无时间限制)","end_time":"兑换结束时间(0表示无时间限制)"},{...}]}}
+
+1-2：执行实物兑换
+REQ : $ApiUrl?action=ExchangeAward&uid=xxx&skey=xxxx&param=xxx
+	  $param['award_id']="实物兑换ID" 
+	  $param['mobile']="手机或QQ号" 
+RESP: {"ret":0,"desc":"成功提示：兑换成功，充值金额一般会在10分钟内到账....","data":{"curr_coin":"当前元宝数"}}
+      {"ret":300,"desc":"错误提示(兑换物品不存在|手机或QQ号必须|兑换物品非法...)"}
+      {"ret":301,"desc":"兑换失败(元宝不足,请先充值或做任务获取|活动已经结束|已经有人捷足先登了，下次记得手要快哦..."}
+      
+0:抽奖 Lottery
+0-1：请求所有抽奖项
+REQ : $ApiUrl?action=Lottery&uid=xxx&skey=xxxx&param=xxx
+	  $param['actType']="lPrize" 
+RESP: {"ret":0,"desc":"","data":{"rem_num":"当日剩余次数","telCharge":"话费券数量","res":[{"awardType":"0|1|2|3(励奖类型0:金币,1:元宝,2:话费券,3:IPHONE5,IPAD,其他)","amount":"奖励数额"},{...}]}}
+      {"ret":300,"desc":"抽奖已关闭"}}
+      {"ret":301,"desc":"当日抽奖次数已用完"}}
+      {"ret":302,"desc":"非法请求"}}
+      
+0-2：执行抽奖获得抽奖结果      
+REQ : $ApiUrl?action=Lottery&uid=xxx&skey=xxxx&param=xxx
+	  $param['actType']="lRes" 
+RESP: {"ret":0,"desc":"","data":{"rem_num":"当日剩余次数","telCharge":"话费券数量","curr_money":"当前金币","curr_coin":"当前元宝","res_ind":"抽奖项的数组索引"}}}
+      {"ret":300,"desc":"抽奖已关闭"}}
+      {"ret":301,"desc":"当日抽奖次数已用完"}}
+      {"ret":302,"desc":"非法请求"}}
+      
+6:有偿抽奖 Lottery
+6-1：请求所有抽奖项
+REQ : $ApiUrl?action=Lottery&uid=xxx&skey=xxxx&param=xxx
+	  $param['actType']="lPrize" 
+	  $param['ispay']="1" 
+RESP: {"ret":0,"desc":"","data":{"start_t":活动开始时间,"end_t":活动结束时间,"telCharge":"话费券数量","res":[{"desp":"奖励名称","awardType":"0|1|2|3(励奖类型0:金币,1:元宝,2:话费券,3:IPHONE5,IPAD,其他)","amount":"奖励数额"},{...}]}}
+      {"ret":300,"desc":"抽奖已关闭"}}
+      {"ret":302,"desc":"非法请求"}}
+      
+6-2：执行抽奖获得抽奖结果      
+REQ : $ApiUrl?action=Lottery&uid=xxx&skey=xxxx&param=xxx
+	  $param['actType']="lRes" 
+	  $param['ispay']="1" 
+RESP: {"ret":0,"desc":"","data":{"rem_num":"当日剩余次数","telCharge":"话费券数量","curr_money":"当前金币","curr_coin":"当前元宝","res_ind":"抽奖项的数组索引"}}}
+      {"ret":300,"desc":"抽奖已关闭"}}
+      {"ret":301,"desc":"当日抽奖次数已用完"}}
+      {"ret":302,"desc":"非法请求"}}
+      {"ret":304,"desc":"非活动期"}}
+      {"ret":305,"desc":"金币不足"}}
+      {"ret":306,"desc":"免费抽奖未完成"}}
+      

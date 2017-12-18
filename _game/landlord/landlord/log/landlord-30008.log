@@ -1,0 +1,132 @@
+[debug][2016-11-05 10:13:50] read body failed[Operation now in progress]
+[error][2016-11-05 10:13:50] unknow err in read body[12]
+[error][2016-11-05 10:13:50] unknow err in read body[11]
+[error][2016-11-05 10:13:50] unknow err in read body[14]
+[error][2016-11-05 10:13:50] unknow err in read body[13]
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:26] fd[4] recieve an error len package
+[error][2017-01-06 17:24:31] unknow err in read body[11]
+[error][2017-01-06 17:24:31] fd[4] recieve an error len package
+[error][2017-01-06 17:24:36] unknow err in read body[11]
+[error][2017-01-06 17:24:41] unknow err in read body[11]
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:41] fd[4] recieve an error len package
+[error][2017-01-06 17:24:46] unknow err in read body[11]
+[error][2017-01-06 17:24:46] fd[4] recieve an error len package
+[error][2017-01-06 17:24:46] fd[4] recieve an error len package
+[error][2017-01-06 17:24:46] fd[4] recieve an error len package
+[error][2017-01-06 17:24:46] fd[4] recieve an error len package
+[error][2017-01-06 17:25:11] fd[4] recieve an error len package
+[debug][2017-01-06 17:25:21] connection close in read header[11]
+[error][2017-01-06 17:25:21] fd[4] recieve an error len package
+[error][2017-05-12 00:11:10] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:51] fd[4] recieve an error len package
+[error][2017-08-10 14:30:56] unknow err in read body[11]
+[error][2017-08-10 14:30:56] fd[4] recieve an error len package
+[error][2017-08-10 14:31:01] unknow err in read body[11]
+[error][2017-08-10 14:31:06] unknow err in read body[11]
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:06] fd[4] recieve an error len package
+[error][2017-08-10 14:31:11] unknow err in read body[11]
+[error][2017-08-10 14:31:11] fd[4] recieve an error len package
+[error][2017-08-10 14:31:11] fd[4] recieve an error len package
+[error][2017-08-10 14:31:11] fd[4] recieve an error len package
+[error][2017-08-10 14:31:11] fd[4] recieve an error len package
+[error][2017-08-10 14:31:11] fd[4] recieve an error len package
+[error][2017-08-10 14:31:37] fd[4] recieve an error len package
+[debug][2017-08-10 14:31:47] connection close in read header[12]
+[error][2017-08-10 14:31:47] fd[4] recieve an error len package
+[error][2017-08-10 14:31:47] fd[4] recieve an error len package
+[error][2017-08-10 14:31:53] fd[4] recieve an error len package
+[error][2017-08-18 18:53:49] fd[4] recieve an error len package
+[error][2017-08-25 10:17:47] fd[4] recieve an error len package
+[error][2017-08-25 11:09:06] fd[4] recieve an error len package
+[error][2017-08-25 12:00:30] fd[4] recieve an error len package
+[error][2017-08-25 18:05:16] fd[4] recieve an error len package
+[error][2017-08-25 18:41:49] fd[4] recieve an error len package
+[error][2017-08-25 19:18:57] fd[4] recieve an error len package
+[debug][2017-09-15 12:24:48] player[586990] login success on game.cc
+[debug][2017-09-15 12:24:52] #########join robot[0][2]########
+[debug][2017-09-15 12:24:58] player[1143] login success on game.cc
+[debug][2017-09-15 12:25:03] player[1144] login success on game.cc
+[debug][2017-09-15 12:25:12] tid[1] start game[586990][1143][1144]
+[debug][2017-09-15 12:26:25] lwin_landlord M[586990] [622907] [122880] P [0]
+[debug][2017-09-15 12:26:25] lwin_farmer M[1143] [266273] [76800] P [0]
+[debug][2017-09-15 12:26:25] lwin_farmer M[1144] [415866] [76800] P [0]
+[debug][2017-09-15 12:26:25] end_game base[800] ratio[96],[586990][1143][1144]
+[debug][2017-09-15 12:26:25] ##lastUp_day_time[1505449585]
+[debug][2017-09-15 12:26:33] player[586990] login success on game.cc
+[debug][2017-09-15 12:26:37] #########join robot[0][2]########
+[debug][2017-09-15 12:26:43] player[1146] login success on game.cc
+[debug][2017-09-15 12:26:48] player[1145] login success on game.cc
+[debug][2017-09-15 12:26:55] tid[2] start game[586990][1146][1145]
+[debug][2017-09-15 12:28:45] fwin_landlord M[1145][397226][153600] P [0]
+[debug][2017-09-15 12:28:45] fwin_farmer0 M[1146][541157][61440] P [0]
+[debug][2017-09-15 12:28:45] fwin_farmer1 M[586990][684347][61440] P [0]
+[debug][2017-09-15 12:28:45] end_game base[800] ratio[96],[1145][1146][586990]
+[debug][2017-09-15 12:28:53] player[586990] login success on game.cc
+[debug][2017-09-15 12:28:57] #########join robot[0][2]########
+[debug][2017-09-15 12:29:08] player[1148] login success on game.cc
+[debug][2017-09-15 12:29:10] player[1147] login success on game.cc
+[debug][2017-09-15 12:29:17] tid[1] start game[586990][1148][1147]
+[debug][2017-09-15 12:30:58] fwin_landlord M[1148][275453][76800] P [0]
+[debug][2017-09-15 12:30:58] fwin_farmer0 M[1147][480192][30720] P [0]
+[debug][2017-09-15 12:30:58] fwin_farmer1 M[586990][715067][30720] P [0]
+[debug][2017-09-15 12:30:58] end_game base[800] ratio[48],[1148][1147][586990]
+[debug][2017-09-15 12:31:04] player[586990] login success on game.cc
+[debug][2017-09-15 12:31:07] uid[1148] money[275453] min_money[300000] money too less.
+[debug][2017-09-15 12:31:08] #########join robot[0][2]########
+[debug][2017-09-15 12:31:12] player[1149] login success on game.cc
+[debug][2017-09-15 12:31:14] player[1150] login success on game.cc
+[debug][2017-09-15 12:31:23] tid[2] start game[586990][1149][1150]
+[debug][2017-09-15 12:32:42] lwin_landlord M[586990] [776507] [61440] P [0]
+[debug][2017-09-15 12:32:42] lwin_farmer M[1149] [271205] [38400] P [0]
+[debug][2017-09-15 12:32:42] lwin_farmer M[1150] [497129] [38400] P [0]
+[debug][2017-09-15 12:32:42] end_game base[800] ratio[48],[586990][1149][1150]
+[debug][2017-09-15 12:32:48] player[586990] login success on game.cc
+[debug][2017-09-15 12:32:52] #########join robot[0][2]########
+[debug][2017-09-15 12:32:57] player[1152] login success on game.cc
+[debug][2017-09-15 12:32:59] player[1151] login success on game.cc
+[debug][2017-09-15 12:33:09] tid[1] start game[586990][1152][1151]
+[debug][2017-09-15 12:34:19] fwin_landlord M[1152][361188][9600] P [0]
+[debug][2017-09-15 12:34:19] fwin_farmer0 M[1151][370370][3840] P [0]
+[debug][2017-09-15 12:34:19] fwin_farmer1 M[586990][780347][3840] P [0]
+[debug][2017-09-15 12:34:19] end_game base[800] ratio[6],[1152][1151][586990]
+[debug][2017-09-15 12:34:25] player[586990] login success on game.cc
+[debug][2017-09-15 12:34:29] #########join robot[0][2]########
+[debug][2017-09-15 12:34:36] player[1153] login success on game.cc
+[debug][2017-09-15 12:34:36] player[1154] login success on game.cc
+[debug][2017-09-15 12:34:45] tid[2] start game[586990][1153][1154]
+[debug][2017-09-15 12:36:21] fwin_landlord M[1153][441269][38400] P [0]
+[debug][2017-09-15 12:36:21] fwin_farmer0 M[1154][472365][15360] P [0]
+[debug][2017-09-15 12:36:21] fwin_farmer1 M[586990][795707][15360] P [0]
+[debug][2017-09-15 12:36:21] end_game base[800] ratio[24],[1153][1154][586990]
+[debug][2017-09-15 12:36:28] player[586990] login success on game.cc
+[debug][2017-09-15 12:36:32] #########join robot[0][2]########
+[debug][2017-09-15 12:36:39] player[1155] login success on game.cc
+[debug][2017-09-15 12:36:39] player[1156] login success on game.cc

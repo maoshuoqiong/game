@@ -1,0 +1,78 @@
+<?php
+	/**
+	 *  版本更新信息
+	 *  test:
+	 *  http://api.53jiankang.com:88/api.php?action=Update&param={"appId":"appId", "cpId":"cpId0001"}
+	 */
+	
+    class Update extends APIBase {
+		
+		public $tag = "Update";
+		public $isLogin = false;
+		
+		public function before() {
+			$this->initMysqlSlave();
+			return true;
+		}
+
+		public function logic() {
+
+			
+		//"cpId":"100000001000001","appId":"com.landlord.ddz.landlord.1"
+		
+		$appver = "";
+		$appid = "";
+		$cpid = "";
+		if (isset($this->param['appId'])) {
+			$appid =  $this->param['appId'];	
+		}
+		if (isset($this->param['cpId'])) {
+			$cpid =  $this->param['cpId'];	
+		}
+		
+		$pkg = $appid;
+		$arrTmp = explode(".", $appid);
+		if (count($arrTmp) > 0) {
+			$pkg = str_replace(".".$arrTmp[count($arrTmp)-1], "", $pkg);
+		}
+		//对以前不规范的包名进行更正
+		$tpkg = "com.landlord.ddz.";
+		$tpos = strpos( $pkg, $tpkg);
+		if ($tpos === FALSE) {
+			$tpkg2 = "com.landlord.ddzmm.";
+			$tpos2 = strpos( $pkg, $tpkg2);
+			if ($tpos2 === FALSE) {
+			}
+			else {
+				 $pkg = "com.landlord.ddzmm";
+			}	
+		}
+		else {
+			 $pkg = "com.landlord.ddz";
+		}
+		
+		//$row = $this->mysql->select("appver", "*", array('appid' => $appid, 'cpid' => $cpid), "ORDER BY cpid DESC LIMIT 1");
+		$row = $this->mysqlSlave->select("view_apps_channels", "*", array('package' => $pkg, 'channel_id' => $cpid, 'isupd' => '1'));
+		
+		$verinfo = array();
+		$verinfo["url"] = "";
+		$verinfo["verCode"] = 0; //2
+		$verinfo["isForce"] = 0;		
+		foreach ($row as $ro) {
+			$vercode = (int) $ro['verCode'];
+			$verurl = $ro['ver_url'];			
+			$isupd = (int) $ro['isupd'];
+			
+			$verinfo["url"] = $verurl;
+			$verinfo["verCode"] = $vercode;
+			$verinfo["isForce"] = $isupd; 					
+		}
+				
+		$this->returnData($verinfo);
+		}
+		
+    	public function after() {
+    		$this->deinitMysqlSlave();
+		}
+    }
+?>

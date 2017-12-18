@@ -1,0 +1,99 @@
+<?php
+	/**
+	 * 登录
+	 */
+    class Login extends APIBase {
+		
+		public $tag = "Login";
+		public $isLogin = false;
+		
+		public function before() {
+			$this->initMysql();
+			$this->initCacheRedis();
+			return true;
+		}
+
+		public function logic() {
+			if (!isset($this->param['user'])) {
+				$this->returnError(310, "user must be needed");
+			}
+			if (!isset($this->param['password'])) {
+				$this->returnError(310, "password must be needed");
+			}
+			$user = strtolower($this->param['user']);
+			$row = $this->mysql->select("player", "*", array('user' => $user));
+			if (count($row) == 0) {
+				$this->returnError(312, '用户名错误');
+			} elseif (count($row) > 1) {
+				$this->e("{$user} repeat");
+				$this->returnError(500, "server error.");
+			}
+			$password = md5($this->param['password'].$row[0]['salt']);
+			if ($password != $row[0]['password']) {
+				$this->returnError(312, '密码错误');
+			}
+			$uid = $row[0]['id'];
+			$this->initDataRedis($uid);
+			$isExists = $this->data_redis->exists("hu:{$uid}");
+			if (!$isExists) {
+				$this->data_redis->hMset("hu:{$uid}", $row[0]);
+			}
+			
+			$this->continuous_landing($uid);
+			$salt = $this->data_redis->hGet("u:{$uid}", 'salt');
+			$now = time();
+			$skey = md5($now . $salt);
+			
+			$this->data_redis->hMset("hu:$uid", array("update_time" => $now, "heartbeat_at" => $now, "skey" => $skey));
+			$hasRcRes = 0;
+			$hasRc = $this->data_redis->hGet("hpe:{$uid}", "hasRecharge");
+			if(!$hasRc && isset($hasRc['hasRecharge'])){
+				$hasRcRes = (int)$hasRc['hasRecharge'];
+			}
+			$user_info = $this->data_redis->hMget("hu:$uid", array(
+					'user', 'name', 'sex', 'money', 'rmb', 'coin', 'skey', 
+					'login_days', 'is_get', 'total_board', 'total_win', 'exp'
+			));
+			$user_info['uid'] = (int)$uid;
+			$user_info['sex'] = (int)$user_info['sex'];
+			$user_info['money'] = (int)$user_info['money'];
+			$user_info['rmb'] = (int)$user_info['rmb'];
+			$user_info['coin'] = (int)$user_info['coin'];
+			$user_info['login_days'] = (int)$user_info['login_days'];
+			$user_info['is_get'] = (int)$user_info['is_get'];
+			$total_lose = $user_info['total_board'] - $user_info['total_win'];
+			$user_info['history'] = array((int)$user_info['total_win'], (int)$total_lose);
+			$user_info['total_board'] = (int)$user_info['total_board'];
+			$user_info['total_win'] = (int)$user_info['total_win'];
+			$user_info['exp'] = (int)$user_info['exp'];
+			$user_info['hasrc'] = $hasRcRes;
+			//log login 
+			$login_log['uid'] = (int)$uid;
+			$this->mysql->insert("log_login", $login_log);
+			
+			$this->returnData($user_info);
+		}
+		
+		/**
+		 * 连续登录
+		 */
+		private function continuous_landing($uid) {
+			$ts = strtotime(date("Y-m-d"));
+			$update_time = $this->data_redis->hGet("hu:{$uid}", 'update_time');
+			if ($update_time <= $ts) {
+				if ($update_time > ($ts - 86400)) {
+					$this->data_redis->hincrBy("hu:{$uid}", "login_days", 1);
+					$this->data_redis->hset("hu:{$uid}", "is_get", 0);
+				} else {
+					$this->data_redis->hMset("hu:{$uid}", array("login_days" => 1, "is_get" => 0));
+				}
+			}
+		}
+		
+    	public function after() {
+    		$this->deinitDataRedis();
+			$this->deinitCacheRedis();
+			$this->deinitMysql();
+		}
+    }
+?>

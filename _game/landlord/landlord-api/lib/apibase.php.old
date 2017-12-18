@@ -1,0 +1,198 @@
+<?php
+include_once 'commonTool.php';
+    class APIBase {
+		
+		public $tag = "APIBase";
+		public $uid;
+		public $isLogin = true;
+		public $response = array();
+		public $param;
+
+		public $mysql;
+		public $data_redis;
+		public $cache_redis;
+		
+		public function before() {
+			return true;
+		}
+		
+		public function init() {			
+			if ($this->isLogin) {
+				if (!isset($_GET['uid']) or !isset($_GET['skey'])) {
+					$this->returnError(301, 'uid or skey must needed');
+				}
+				if (empty($_GET['uid']) or empty($_GET['skey'])) {
+					$this->returnError(301, 'uid or skey error');
+				}
+				$this->initDataRedis($_GET['uid']);
+				
+				$skey = $this->data_redis->hGet("hu:{$_GET['uid']}", 'skey');
+				if (Config::$debug) {
+					$this->uid = $_GET['uid'];
+				} else {
+					if ($skey == $_GET['skey']) {
+						$this->uid = $_GET['uid'];
+					} else {
+						return $this->returnError(505, "skey error");
+					}
+				}
+
+			}
+			
+			if (isset($_GET['param'])) {
+				$this->param = (array)json_decode($_GET['param']);
+			}
+		}
+		
+		public function deinit() {
+			// release 	
+		}
+		
+		public function initDataRedis($uid) {
+			$mod = Config::$mod;
+			$redis_config = Config::$redis_data_config;
+			$redis_name = 'redis'.($uid % $mod);
+			$this->data_redis = new redis();
+			$ret = $this->data_redis->connect($redis_config[$redis_name]['host'],
+					$redis_config[$redis_name]['port']);
+			if (!$ret) {
+				$this->e("redis connect error.");
+				$this->returnError(3, "redis connect error.");
+			}
+			$ret = $this->data_redis->auth($redis_config[$redis_name]['pass']);
+			if (!$ret) {
+				$this->e("redis auth error.");
+				$this->returnError(3, "redis auth error.");
+			}
+		}
+		
+    	public function deinitDataRedis() {
+			$this->data_redis->close();
+		}
+
+		public function initCacheRedis() {
+			$redis_config = Config::$redis_cache_config;
+			$this->cache_redis = new redis();
+			$ret = $this->cache_redis->connect($redis_config['host'], $redis_config['port']);
+			if (!$ret) {
+				$this->e("redis connect error.");
+				$this->returnError(3, "redis connect error.");
+			}
+			$ret = $this->cache_redis->auth($redis_config['pass']);
+			if (!$ret) {
+				$this->e("redis auth error.");
+				$this->returnError(3, "redis auth error.");
+			}
+		}
+		
+    	public function deinitCacheRedis() {
+			$this->cache_redis->close();
+		}
+
+		public function initMysql() {
+			$this->mysql = new Mysql();
+			$ret = $this->mysql->connect(Config::$mysql_config);
+			if (!$ret) {
+				$this->returnError(3, "db connect error.");
+			}
+		}
+		
+		public  function deinitMysql() {
+			$this->mysql->close();
+		}
+		
+		public function exec_logic() {
+			$this->init();
+			
+			if ($this->before()) {
+				$this->logic();
+				$this->after();
+			}
+			
+			$this->deinit();
+		}
+		
+		public function logic() {
+			
+		}
+		
+		public function after() {
+		
+		}
+		
+		public function returnData($data, $ret = 0, $desc = '') {
+			$this->response['ret'] = $ret;
+			$this->response['desc'] = $desc;
+			if ($data) {
+				$this->response['data'] = $data;	
+			}
+			echo json_encode($this->response);
+			return;
+		}
+		
+		public function returnError($code, $desc) {
+			$this->returnData(null, $code, $desc);
+			exit(0);
+		}
+		
+                public function returnError2($data, $code, $desc) {
+			$this->returnData($data, $code, $desc);
+			exit(0);
+		}               
+    
+		public function sendMessage($uid, $title, $content) {
+			$message = array(
+					'uid' => $uid,
+					'type' => 1,
+					'status' => 0,
+					'title' => $title,
+					'content' => $content,
+					'create_time' => time(),
+					'update_time' => time()
+			);
+			$this->mysql->insert('message', $message);
+		}
+		
+		private function sendFlow($flow) {
+			$sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+			$msg = Config::$log_agent['pass'] . json_encode($flow);
+			$len = strlen($msg);
+			socket_sendto($sock, $msg, $len, 0, Config::$log_agent['host'], Config::$log_agent['port']);
+			socket_close($sock);
+		}
+		
+		public function initPlayerExt($uid) {
+			$player_ext = array();
+			$player_ext['uid'] = $uid;
+			$player_ext['lastLotteryDate'] = 0;
+			$player_ext['lastPrizeDate'] = 0;
+			$player_ext['currLotteryNum'] = 0;
+			$player_ext['hasRecharge'] = 0;
+			$player_ext['telCharge'] = 0;
+			$player_ext['updatedate'] = date('Y-m-d H:i:s');
+			$this->mysql->insert("playerext", $player_ext);
+			$ret = $this->data_redis->hMset("hpe:{$uid}", $player_ext);
+			if (!$ret) {
+				$this->e("redis hMset initPlayerExt error.");
+				$this->returnError(3, "redis hMset initPlayerExt error.");
+			}
+			return $player_ext;
+		}
+	
+		public function d($msg) {
+			Config::$logger->debug($this->tag, $msg);
+		}
+		public function i($msg) {
+			Config::$logger->info($this->tag, $msg);
+		}
+		public function w($msg) {
+			Config::$logger->warn($this->tag, $msg);
+		}
+		public function e($msg) {
+			Config::$logger->error($this->tag, $msg);
+		}
+		public function f($msg) {
+			Config::$logger->fatal($this->tag, $msg);
+		}
+    }
+?>
